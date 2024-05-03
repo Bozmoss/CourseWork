@@ -5,7 +5,7 @@
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	float mat[3][3] = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
-	Matrix3D(mat);
+	Matrix3D(&mat[0][0]);
 	glFlush();
 }
 
