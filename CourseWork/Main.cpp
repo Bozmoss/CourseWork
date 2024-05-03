@@ -7,7 +7,7 @@
 float z = 0;
 
 void display(void) {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Vertex tPoints[] = {
 		Vertex(-1, 0, z),
 		Vertex(1, 0, z),
@@ -42,6 +42,7 @@ int main(int argc, char** argv) {
 	glOrtho(0.0, WIDTH, 0.0, HEIGHT, -DEPTH, 0.0);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyPressed);
+	glutMouseFunc() //TODO MOUSE FUNCS
 	glTranslatef(WIDTH / 2, HEIGHT / 2, 0);
 	glutMainLoop();
 	return 0;
