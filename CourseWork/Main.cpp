@@ -1,11 +1,12 @@
 #include <GL/glut.h>
 #include "GLOBAL.h"
-#include "Matrix3D.h"
+#include "Matrix3.h"
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	float mat[3][3] = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
-	Matrix3D(&mat[0][0]);
+	float* matPtr = &mat[0][0];
+	Matrix3 m(matPtr);
 	glFlush();
 }
 

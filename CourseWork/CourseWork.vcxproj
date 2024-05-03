@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Matrix3D.cpp" />
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -136,7 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLOBAL.h" />
-    <ClInclude Include="Matrix3D.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
