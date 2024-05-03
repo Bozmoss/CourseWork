@@ -1,21 +1,36 @@
 #include <GL/glut.h>
 #include "GLOBAL.h"
-#include "Matrix3.h"
+#include "Vertex.h"
+#include "Shape.h"
+
+//Vars
+float z = 0;
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
-	float mat[3][3] = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
-	float* matPtr = &mat[0][0];
-	Matrix3 m(matPtr);
+	Vertex tPoints[] = {
+		Vertex(-1, 0, z),
+		Vertex(1, 0, z),
+		Vertex(0, 1, z)
+	};
+	Vertex* tPointStart = &tPoints[0];
+	Shape triangle(tPointStart, sizeof(tPoints) / sizeof(tPoints[0]));
+	triangle.draw();
 	glFlush();
 }
 
-void keys(int key, int x, int y) {
+void keyPressed(unsigned char key, int x, int y) {
+	if (key == 'w') {
+		z += 0.1;
+	}
+	if (key == 's') {
+		z -= 0.1;
+	}
 	glutPostRedisplay();
 }
 
 int main(int argc, char** argv) {
-	//ShowWindow(GetConsoleWindow(), SW_HIDE); //Hide console
+	ShowWindow(GetConsoleWindow(), SW_HIDE); //Hide console
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowPosition(INITIAL_WINDOW_X, INITIAL_WINDOW_Y);
@@ -26,8 +41,8 @@ int main(int argc, char** argv) {
 	glLoadIdentity(); //Start with identity matrix
 	glOrtho(0.0, WIDTH, 0.0, HEIGHT, -DEPTH, 0.0);
 	glutDisplayFunc(display);
-	glutSpecialFunc(keys);
-	glTranslatef(WIDTH/2, HEIGHT/2, 0);
+	glutKeyboardFunc(keyPressed);
+	glTranslatef(WIDTH / 2, HEIGHT / 2, 0);
 	glutMainLoop();
 	return 0;
 }
