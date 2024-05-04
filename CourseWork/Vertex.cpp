@@ -12,10 +12,6 @@ Vertex Vertex::getProjectedVertex() {
 	return Vertex(FOV * (x) / (FOV + z), FOV * (y) / (FOV + z), 0);
 }
 
-Vertex Vertex::rotate(float yaw, float pitch, float roll) {
-	return Vertex(
-		x * cos(yaw) * cos(pitch) + y * (cos(yaw) * sin(pitch) * sin(roll) - sin(yaw) * cos(roll)) + z * (cos(yaw) * sin(pitch) * cos(roll) + sin(yaw) * sin(roll)),
-		x * sin(yaw) * cos(pitch) + y * (sin(yaw) * sin(pitch) * sin(roll) + cos(yaw) * cos(roll)) + z * (sin(yaw) * sin(pitch) * cos(roll) - cos(yaw) * sin(roll)),
-		-x * sin(pitch) + y * cos(pitch) * sin(roll) + z * cos(pitch) * cos(roll)
-	);
+Vertex Vertex::rotate(float ax, float ay) {
+	return Vertex(x * cos(ay) + z * sin(ay), x * sin(ax) * sin(ay) - z * sin(ax) * cos(ay) + y * cos(ax), -x * cos(ax) * sin(ay) + z * cos(ax) * cos(ay) + y * sin(ax));
 }

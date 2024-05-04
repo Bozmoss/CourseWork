@@ -7,6 +7,7 @@ using namespace std;
 class Shape {
 private:
 	list<Vertex> vertices;
+	list<Vertex>::iterator it;
 public:
 	Shape(Vertex* vArr, int len) {
 		for (int i = 0; i < len; i++) {
@@ -14,5 +15,6 @@ public:
 		}
 	}
 	virtual void draw();
+	virtual void rotate(float ax, float ay);
 };
 #endif

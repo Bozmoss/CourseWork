@@ -15,6 +15,6 @@ public:
 	}
 	virtual void drawGlVertex();
 	virtual Vertex getProjectedVertex();
-	virtual Vertex rotate(float yaw, float pitch, float roll);
+	virtual Vertex rotate(float ax, float ay);
 };
 #endif

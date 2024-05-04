@@ -4,27 +4,39 @@
 #include "Shape.h"
 
 //Vars
-float z = 0;
+float z = 0, ax = 0, ay = 0;
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Vertex tPoints[] = {
-		Vertex(-1, 0, z),
-		Vertex(1, 0, z),
-		Vertex(0, 1, z)
+		Vertex(-1, -1, -1),
+		Vertex(1, -1, -1),
+		Vertex(1, 1, -1),
+		Vertex(-1, 1, -1),
+		Vertex(-1, -1, 1),
+		Vertex(1, -1, 1),
+		Vertex(1, 1, 1),
+		Vertex(-1, 1, 1)
 	};
 	Vertex* tPointStart = &tPoints[0];
 	Shape triangle(tPointStart, sizeof(tPoints) / sizeof(tPoints[0]));
+	triangle.rotate(ax, ay);
 	triangle.draw();
 	glFlush();
 }
 
 void keyPressed(unsigned char key, int x, int y) {
 	if (key == 'w') {
-		z += 0.1;
+		ax += 0.1;
 	}
-	if (key == 's') {
-		z -= 0.1;
+	else if (key == 's') {
+		ax -= 0.1;
+	}
+	else if (key == 'd') {
+		ay -= 0.1;
+	}
+	else if (key == 'a') {
+		ay += 0.1;
 	}
 	glutPostRedisplay();
 }
@@ -42,7 +54,6 @@ int main(int argc, char** argv) {
 	glOrtho(0.0, WIDTH, 0.0, HEIGHT, -DEPTH, 0.0);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(keyPressed);
-	glutMouseFunc() //TODO MOUSE FUNCS
 	glTranslatef(WIDTH / 2, HEIGHT / 2, 0);
 	glutMainLoop();
 	return 0;
