@@ -1,13 +1,17 @@
+#define _USE_MATH_DEFINES
+
 #include <GL/glut.h>
 #include <iterator>
 #include <list>
+#include <cmath>
 #include "Shape.h"
 
 void Shape::draw() {
-	glBegin(GL_POINTS);
+	glBegin(GL_QUADS);
 	for (it = vertices.begin(); it != vertices.end(); it++) {
-		(*it).getProjectedVertex().drawGlVertex();
-	}
+		Vertex current = (*it).getProjectedVertex();
+		current.drawGlVertex();
+		}
 	glEnd();
 }
 

@@ -15,3 +15,9 @@ Vertex Vertex::getProjectedVertex() {
 Vertex Vertex::rotate(float ax, float ay) {
 	return Vertex(x * cos(ay) + z * sin(ay), x * sin(ax) * sin(ay) - z * sin(ax) * cos(ay) + y * cos(ax), -x * cos(ax) * sin(ay) + z * cos(ax) * cos(ay) + y * sin(ax));
 }
+
+void Vertex::setRGB(float r, float g, float b) {
+	this->r = r;
+	this->g = g;
+	this->b = b;
+}

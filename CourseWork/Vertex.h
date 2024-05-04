@@ -16,5 +16,6 @@ public:
 	virtual void drawGlVertex();
 	virtual Vertex getProjectedVertex();
 	virtual Vertex rotate(float ax, float ay);
+	virtual void setRGB(float r, float g, float b);
 };
 #endif
