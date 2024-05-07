@@ -9,15 +9,43 @@ float z = 0, ax = 0, ay = 0;
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Vertex tPoints[] = {
-		Vertex(-1, -1, -1),
-		Vertex(1, -1, -1),
-		Vertex(1, 1, -1),
-		Vertex(-1, 1, -1),
-		Vertex(-1, -1, 1),
-		Vertex(1, -1, 1),
-		Vertex(1, 1, 1),
-		Vertex(-1, 1, 1)
-	};
+    Vertex( - 1.0f,-1.0f,-1.0f), // triangle 1 : begin
+    Vertex( - 1.0f,-1.0f, 1.0f),
+    Vertex(-1.0f, 1.0f, 1.0f), // triangle 1 : end
+    Vertex(1.0f, 1.0f,-1.0f), // triangle 2 : begin
+    Vertex(-1.0f,-1.0f,-1.0f),
+    Vertex(-1.0f, 1.0f,-1.0f), // triangle 2 : end
+    Vertex(1.0f,-1.0f, 1.0f),
+    Vertex(-1.0f,-1.0f,-1.0f),
+    Vertex(1.0f,-1.0f,-1.0f),
+    Vertex(1.0f, 1.0f,-1.0f),
+    Vertex(1.0f,-1.0f,-1.0f),
+    Vertex(-1.0f,-1.0f,-1.0f),
+    Vertex(-1.0f,-1.0f,-1.0f),
+    Vertex(-1.0f, 1.0f, 1.0f),
+    Vertex(-1.0f, 1.0f,-1.0f),
+    Vertex(1.0f,-1.0f, 1.0f),
+    Vertex(-1.0f,-1.0f, 1.0f),
+    Vertex(-1.0f,-1.0f,-1.0f),
+    Vertex(-1.0f, 1.0f, 1.0f),
+    Vertex(-1.0f,-1.0f, 1.0f),
+    Vertex(1.0f,-1.0f, 1.0f),
+    Vertex(1.0f, 1.0f, 1.0f),
+    Vertex(1.0f,-1.0f,-1.0f),
+    Vertex(1.0f, 1.0f,-1.0f),
+    Vertex(1.0f,-1.0f,-1.0f),
+    Vertex(1.0f, 1.0f, 1.0f),
+    Vertex(1.0f,-1.0f, 1.0f),
+    Vertex(1.0f, 1.0f, 1.0f),
+    Vertex(1.0f, 1.0f,-1.0f),
+    Vertex(-1.0f, 1.0f,-1.0f),
+    Vertex(1.0f, 1.0f, 1.0f),
+    Vertex(-1.0f, 1.0f,-1.0f),
+    Vertex(-1.0f, 1.0f, 1.0f),
+    Vertex(1.0f, 1.0f, 1.0f),
+    Vertex(-1.0f, 1.0f, 1.0f),
+    Vertex(1.0f,-1.0f, 1.0f)
+    };
 	Vertex* tPointStart = &tPoints[0];
 	Shape triangle(tPointStart, sizeof(tPoints) / sizeof(tPoints[0]));
 	triangle.rotate(ax, ay);
