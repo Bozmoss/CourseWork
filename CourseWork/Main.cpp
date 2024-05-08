@@ -11,13 +11,13 @@ void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	DebugLines d;
 	d.draw(ax, ay);
-	Vertex tPoints[] = {
+	Vertex points[] = {
 		Vertex(1, 1, 1)
 	};
-	Vertex* tPointStart = &tPoints[0];
-	Shape triangle(tPointStart, sizeof(tPoints) / sizeof(tPoints[0]));
-	triangle.rotate(ax, ay);
-	triangle.draw();
+	Vertex* pointStart = &points[0];
+	Shape s(pointStart, sizeof(points) / sizeof(points[0]));
+	s.rotate(ax, ay);
+	s.draw();
 	glFlush();
 }
 
