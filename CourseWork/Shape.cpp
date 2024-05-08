@@ -7,7 +7,7 @@
 #include "Shape.h"
 
 void Shape::draw() {
-	glBegin(GL_QUADS);
+	glBegin(GL_POINTS);
 	for (it = vertices.begin(); it != vertices.end(); it++) {
 		Vertex current = (*it).getProjectedVertex();
 		current.drawGlVertex();

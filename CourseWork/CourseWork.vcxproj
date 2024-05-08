@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DebugLines.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Vertex.cpp" />
@@ -135,6 +136,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DebugLines.h" />
     <ClInclude Include="GLOBAL.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Vertex.h" />
