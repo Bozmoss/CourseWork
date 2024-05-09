@@ -2,20 +2,52 @@
 #include "GLOBAL.h"
 #include "Vertex.h"
 #include "Shape.h"
-#include "DebugLines.h"
 
 //Vars
 float z = 0, ax = 0, ay = 0;
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	DebugLines d;
-	d.draw(ax, ay);
-	Vertex points[] = {
-		Vertex(1, 1, 1)
+	Vertex points[][4] = {
+		{
+			Vertex(-1, 1, 1, 1, 0, 0),
+			Vertex(1, 1, 1, 1, 0, 0),
+			Vertex(1, -1, 1, 1, 0, 0),
+			Vertex(-1, -1, 1, 1, 0, 0)
+},
+		{
+			Vertex(-1, 1, -1),
+			Vertex(1, 1, -1),
+			Vertex(1, -1, -1),
+			Vertex(-1, -1, -1)
+},
+		{
+			Vertex(1, 1, -1),
+			Vertex(1, 1, 1),
+			Vertex(1, -1, 1),
+			Vertex(1, -1, -1)
+},
+		{
+			Vertex(-1, 1, -1),
+			Vertex(-1, 1, 1),
+			Vertex(-1, -1, 1),
+			Vertex(-1, -1, -1)
+},
+		{
+			Vertex(-1, 1, -1),
+			Vertex(1, 1, -1),
+			Vertex(1, 1, 1),
+			Vertex(-1, 1, 1)
+},
+		{
+			Vertex(-1, -1, -1),
+			Vertex(1, -1, -1),
+			Vertex(1, -1, 1),
+			Vertex(-1, -1, 1)
+}
 	};
-	Vertex* pointStart = &points[0];
-	Shape s(pointStart, sizeof(points) / sizeof(points[0]));
+	Vertex* pointStart = &points[0][0];
+	Shape s(pointStart, sizeof(points) / sizeof(points[0]), sizeof(points[0]) / sizeof(points[0][0]));
 	s.rotate(ax, ay);
 	s.draw();
 	glFlush();

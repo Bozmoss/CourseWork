@@ -6,12 +6,17 @@
 using namespace std;
 class Shape {
 private:
-	list<Vertex> vertices;
-	list<Vertex>::iterator it;
+	list<list<Vertex>> sides;
+	list<list<Vertex>>::iterator it1;
+	list<Vertex>::iterator it2;
 public:
-	Shape(Vertex* vArr, int len) {
-		for (int i = 0; i < len; i++) {
-			vertices.push_back(*(vArr + i));
+	Shape(Vertex* vArr, int len, int innerLen) {
+		for (int i = 0, n = 0; i < len; i++) {
+			list<Vertex> temp;
+			for (int j = 0; j < innerLen; j++, n++) {
+				temp.push_back(*(vArr + n));
+			}
+			sides.push_back(temp);
 		}
 	}
 	virtual void draw();
