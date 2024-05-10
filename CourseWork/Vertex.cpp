@@ -21,3 +21,15 @@ void Vertex::setRGB(float r, float g, float b) {
 	this->g = g;
 	this->b = b;
 }
+
+float Vertex::getX() {
+    return x;
+}
+
+float Vertex::getY() {
+    return y;
+}
+
+float Vertex::getZ() {
+    return z;
+}

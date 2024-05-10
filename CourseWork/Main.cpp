@@ -10,10 +10,10 @@ void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Vertex points[][4] = {
 		{
-			Vertex(-1, 1, 1, 1, 0, 0),
-			Vertex(1, 1, 1, 1, 0, 0),
-			Vertex(1, -1, 1, 1, 0, 0),
-			Vertex(-1, -1, 1, 1, 0, 0)
+			Vertex(-1, 1, 1),
+			Vertex(1, 1, 1),
+			Vertex(1, -1, 1),
+			Vertex(-1, -1, 1)
 },
 		{
 			Vertex(-1, 1, -1),

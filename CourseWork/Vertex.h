@@ -17,5 +17,8 @@ public:
 	virtual Vertex getProjectedVertex();
 	virtual Vertex rotate(float ax, float ay);
 	virtual void setRGB(float r, float g, float b);
+    virtual float getX();
+    virtual float getY();
+    virtual float getZ();
 };
 #endif
