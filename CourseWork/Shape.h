@@ -8,22 +8,17 @@ using namespace std;
 class Shape {
 private:
 	list<list<Vertex>> sides;
-    list<Vector3> normals;
+    list<Vector3> sideNormals;
 	list<list<Vertex>>::iterator it1;
 	list<Vertex>::iterator it2;
+
+    virtual void normals();
 public:
 	Shape(Vertex* vArr, int len, int innerLen) {
 		for (int i = 0, n = 0; i < len; i++) {
 			list<Vertex> sidesTemp;
-			list<Vertex> edgesTemp;
 			for (int j = 0; j < innerLen; j++, n++) {
 				sidesTemp.push_back(*(vArr + n));
-				if (j == 2) {
-                    Vector3 v1(*(vArr + n - 2), *(vArr + n - 1));
-                    Vector3 v2(*(vArr + n - 1), *(vArr + n));
-                    Vector3 cross = v1.crossProduct(v2);
-                    normals.push_back(cross.scale(cross.modulus()));
-				}
 			}
 			sides.push_back(sidesTemp);
 		}

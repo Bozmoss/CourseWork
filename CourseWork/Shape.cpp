@@ -4,15 +4,20 @@
 #include <iterator>
 #include <list>
 #include <cmath>
+#include <iostream>
 #include "Shape.h"
 
 void Shape::draw() {
-	for (it1 = sides.begin(); it1 != sides.end(); it1++) {
-		glBegin(GL_LINE_LOOP);
-		for (it2 = (*it1).begin(); it2 != (*it1).end(); it2++) {
-			(*it2).getProjectedVertex().drawGlVertex();
-		}
-		glEnd();
+    normals();
+    list<Vector3>::iterator it;
+    for (it1 = sides.begin(), it = sideNormals.begin(); it1 != sides.end(); it1++, it++) {
+        //if ((*it).i() > 0 && (*it).j() > 0 && (*it).k() > 0) {
+            glBegin(GL_QUADS);
+            for (it2 = (*it1).begin(); it2 != (*it1).end(); it2++) {
+                (*it2).getProjectedVertex().drawGlVertex();
+            }
+            glEnd();
+        //}
 	}
 }
 
@@ -33,4 +38,15 @@ void Shape::rotate(float ax, float ay) {
 		}
 		sides.push_back(side);
 	}
+}
+
+void Shape::normals() {
+    for (it1 = sides.begin(); it1 != sides.end(); it1++) {
+        list<Vertex> current = (*it1);
+        it2 = current.begin();
+        Vector3 v1((*it2), (*it2++));
+        Vector3 v2((*it2++), (*it2++));
+        Vector3 cross = v1.crossProduct(v2);
+        sideNormals.push_back(cross.scale(cross.modulus()));
+    }
 }
