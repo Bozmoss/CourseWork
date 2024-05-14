@@ -11,13 +11,13 @@ void Shape::draw() {
     normals();
     list<Vector3>::iterator it;
     for (it1 = sides.begin(), it = sideNormals.begin(); it1 != sides.end(); it1++, it++) {
-        //if ((*it).i() > 0 && (*it).j() > 0 && (*it).k() > 0) {
+        //if ((*it).j() > 0) {
             glBegin(GL_QUADS);
             for (it2 = (*it1).begin(); it2 != (*it1).end(); it2++) {
                 (*it2).getProjectedVertex().drawGlVertex();
             }
             glEnd();
-        //}
+        //}                                               //TODO: SEND A LINE FROM EACH FACE TOWARDS THE OBSERVER AND IF THE LINE PASSES THROUGH ANOTHER SIDE DO NOT RENDER THE FACE
 	}
 }
 
