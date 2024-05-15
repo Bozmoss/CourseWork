@@ -1,18 +1,15 @@
 #include <GL/glut.h>
 #include <list>
 #include "Vertex.h"
-#include "Vector3.h"
 #ifndef __SHAPE_H__
 #define __SHAPE_H__
 using namespace std;
 class Shape {
 private:
 	list<list<Vertex>> sides;
-    list<Vector3> sideNormals;
+    list<Vertex> sideCentres;
 	list<list<Vertex>>::iterator it1;
 	list<Vertex>::iterator it2;
-
-    virtual void normals();
 public:
 	Shape(Vertex* vArr, int len, int innerLen) {
 		for (int i = 0, n = 0; i < len; i++) {

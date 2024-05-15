@@ -8,16 +8,12 @@
 #include "Shape.h"
 
 void Shape::draw() {
-    normals();
-    list<Vector3>::iterator it;
-    for (it1 = sides.begin(), it = sideNormals.begin(); it1 != sides.end(); it1++, it++) {
-        //if ((*it).j() > 0) {
-            glBegin(GL_QUADS);
-            for (it2 = (*it1).begin(); it2 != (*it1).end(); it2++) {
-                (*it2).getProjectedVertex().drawGlVertex();
-            }
-            glEnd();
-        //}                                               //TODO: SEND A LINE FROM EACH FACE TOWARDS THE OBSERVER AND IF THE LINE PASSES THROUGH ANOTHER SIDE DO NOT RENDER THE FACE
+    for (it1 = sides.begin(); it1 != sides.end(); it1++, it++) {
+        glBegin(GL_QUADS);
+        for (it2 = (*it1).begin(); it2 != (*it1).end(); it2++) {
+            (*it2).getProjectedVertex().drawGlVertex();
+        }
+        glEnd();
 	}
 }
 
@@ -38,15 +34,4 @@ void Shape::rotate(float ax, float ay) {
 		}
 		sides.push_back(side);
 	}
-}
-
-void Shape::normals() {
-    for (it1 = sides.begin(); it1 != sides.end(); it1++) {
-        list<Vertex> current = (*it1);
-        it2 = current.begin();
-        Vector3 v1((*it2), (*it2++));
-        Vector3 v2((*it2++), (*it2++));
-        Vector3 cross = v1.crossProduct(v2);
-        sideNormals.push_back(cross.scale(cross.modulus()));
-    }
 }
