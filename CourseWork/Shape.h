@@ -1,8 +1,7 @@
+#pragma once
 #include <GL/glut.h>
 #include <list>
 #include "Vertex.h"
-#ifndef __SHAPE_H__
-#define __SHAPE_H__
 using namespace std;
 class Shape {
 private:
@@ -12,7 +11,7 @@ private:
 	list<Vertex>::iterator it2;
     virtual void checkSides();
     virtual list<list<Vertex>> sort2DList(list<list<Vertex>> l);
-    virtual list<Vertex> sortList(list<Vertex> l, int mode=0);
+    virtual list<Vertex> sortList(list<Vertex> l, int mode);
 public:
 	Shape(Vertex* vArr, int len, int innerLen) {
 		for (int i = 0, n = 0; i < len; i++) {
@@ -32,4 +31,3 @@ public:
 	virtual void draw();
 	virtual void rotate(float ax, float ay);
 };
-#endif

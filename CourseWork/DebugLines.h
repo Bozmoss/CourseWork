@@ -1,7 +1,6 @@
+#pragma once
 #include <GL/glut.h>
 #include "Vertex.h"
-#ifndef __DEBUGLINES_H__
-#define __DEBUGLINES_H__
 class DebugLines {
 private:
 	Vertex origin = Vertex(0, 0, 0);
@@ -11,4 +10,3 @@ private:
 public:
 	virtual void draw(float ax, float ay);
 };
-#endif

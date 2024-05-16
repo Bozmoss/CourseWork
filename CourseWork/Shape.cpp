@@ -54,8 +54,8 @@ void Shape::checkSides() {
         }
         sides.push_back(side);
     }
-    temp.clear();
-    temp = sort2DList(sides);
+    //temp.clear();
+    //temp = sort2DList(sides);
     for (it2 = sideCentres.begin(); it2 != sideCentres.end(); it2++) {
         for (it1 = temp.begin(); it1 != temp.end(); it1++) {
             list<Vertex>::iterator it;
@@ -67,16 +67,17 @@ void Shape::checkSides() {
 }
 
 list<list<Vertex>> Shape::sort2DList(list<list<Vertex>> l) {
-    list<list<Vertex>> temp;
+/*    list<list<Vertex>> temp;
     for (it1 = l.begin(); it1 != l.end(); it1++) {
-        list<Vertex> sorted = sortList((*it1));
+        list<Vertex> sorted = sortList((*it1), 0);
         temp.push_back(sorted);
     }
-    return temp;
+    return temp;*/
+    return l;
 }
 
-list<Vertex> Shape::sortList(list<Vertex> l, int mode=0) {
-    for (it2 = l.begin(); it2 != l.end()--; it2++) {
+list<Vertex> Shape::sortList(list<Vertex> l, int mode) {
+/*    for (it2 = l.begin(); it2 != l.end()--; it2++) {
         list<Vertex>::iterator it;
         switch (mode) {
         case 0:
@@ -95,5 +96,6 @@ list<Vertex> Shape::sortList(list<Vertex> l, int mode=0) {
             break;
         }
     }
+    return l;*/
     return l;
 }

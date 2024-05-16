@@ -1,6 +1,4 @@
-#include <GL/glut.h>
-#ifndef __VERTEX_H__
-#define __VERTEX_H__
+#pragma once
 class Vertex {
 private:
 	float x, y, z, r, g, b;
@@ -21,4 +19,3 @@ public:
     virtual float getY();
     virtual float getZ();
 };
-#endif
