@@ -8,44 +8,6 @@ float z = 0, ax = 0, ay = 0;
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*Vertex points[][4] = {
-		{
-			Vertex(-1, 1, 1),
-			Vertex(1, 1, 1),
-			Vertex(1, -1, 1),
-			Vertex(-1, -1, 1)
-},
-		{
-			Vertex(-1, 1, -1),
-			Vertex(1, 1, -1),
-			Vertex(1, -1, -1),
-			Vertex(-1, -1, -1)
-},
-		{
-			Vertex(1, 1, -1),
-			Vertex(1, 1, 1),
-			Vertex(1, -1, 1),
-			Vertex(1, -1, -1)
-},
-		{
-			Vertex(-1, 1, -1),
-			Vertex(-1, 1, 1),
-			Vertex(-1, -1, 1),
-			Vertex(-1, -1, -1)
-},
-		{
-			Vertex(-1, 1, -1),
-			Vertex(1, 1, -1),
-			Vertex(1, 1, 1),
-			Vertex(-1, 1, 1)
-},
-		{
-			Vertex(-1, -1, -1),
-			Vertex(1, -1, -1),
-			Vertex(1, -1, 1),
-			Vertex(-1, -1, 1)
-}
-	};*/
     Vertex points[][3] = {
         {
             Vertex(1, -1, 1),
@@ -66,6 +28,46 @@ void display(void) {
             Vertex(1, 1, 1),
             Vertex(-1, -1, 1),
             Vertex(-1, 1, 1)
+},
+        {
+            Vertex(-1, 1, 1),
+            Vertex(-1, -1, 1),
+            Vertex(-1, -1, -1)
+},
+        {
+            Vertex(-1, 1, 1),
+            Vertex(-1, -1, -1),
+            Vertex(-1, 1, -1)
+},
+        {
+            Vertex(-1, 1, -1),
+            Vertex(-1, -1, -1),
+            Vertex(1, -1, -1)
+},
+        {
+            Vertex(-1, 1, -1),
+            Vertex(1, -1, -1),
+            Vertex(1, 1, -1)
+},
+        {
+            Vertex(1, 1, -1),
+            Vertex(1, -1, -1),
+            Vertex(1, -1, 1)
+},
+        {
+            Vertex(1, 1, -1),
+            Vertex(1, -1, 1),
+            Vertex(1, 1, 1)
+},
+        {
+            Vertex(1, 1, -1),
+            Vertex(1, 1, 1),
+            Vertex(-1, 1, 1)
+},
+        {
+            Vertex(1, 1, -1),
+            Vertex(-1, 1, 1),
+            Vertex(-1, 1, -1)
 }
     };
 	Vertex* pointStart = &points[0][0];
