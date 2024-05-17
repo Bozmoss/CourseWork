@@ -57,13 +57,13 @@ void keyPressed(unsigned char key, int x, int y) {
 	if (key == 'w') {
 		ax -= 0.1;
 	}
-	else if (key == 's') {
+	if (key == 's') {
 		ax += 0.1;
 	}
-	else if (key == 'd') {
+	if (key == 'd') {
 		ay += 0.1;
 	}
-	else if (key == 'a') {
+	if (key == 'a') {
 		ay -= 0.1;
 	}
 	glutPostRedisplay();
