@@ -7,11 +7,17 @@
 
 void Shape::draw() {
     //checkSides();
-    //std::cout << sides.size() << std::endl;
     for (int i = 0; i < sides.size(); i++) {
-        glBegin(GL_QUADS);
+        glBegin(GL_POLYGON);
         for (int j = 0; j < sides.at(i).size(); j++) {
             sides.at(i).at(j).getProjectedVertex().drawGlVertex();
+        }
+        glEnd();
+        glBegin(GL_LINE_LOOP);
+        for (int j = 0; j < sides.at(i).size(); j++) {
+            Vertex current = sides.at(i).at(j).getProjectedVertex();
+            current.setRGB(0, 0, 0);
+            current.drawGlVertex();
         }
         glEnd();
     }
