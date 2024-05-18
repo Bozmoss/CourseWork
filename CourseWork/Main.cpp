@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
 	//ShowWindow(GetConsoleWindow(), SW_HIDE); //Hide console
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowPosition(INITIAL_WINDOW_X, INITIAL_WINDOW_Y);
+	glutInitWindowPosition(glutGet(GLUT_SCREEN_WIDTH) / 2 - WINDOW_WIDTH / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2 - WINDOW_HEIGHT / 2);
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutCreateWindow("GL");
 	glClearColor(0.416, 0.353, 0.804, 0); //Black backgroud

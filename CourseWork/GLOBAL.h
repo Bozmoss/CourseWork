@@ -1,6 +1,5 @@
 #pragma once
-static const float INITIAL_WINDOW_X = 700;
-static const float INITIAL_WINDOW_Y = 500;
+#include <GL/glut.h>
 static const float WINDOW_WIDTH = 600;
 static const float WINDOW_HEIGHT = 600;
 
