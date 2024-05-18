@@ -72,8 +72,7 @@ void display(void) {
     };
 	Vertex* pointStart = &points[0][0];
 	Shape s(pointStart, sizeof(points) / sizeof(points[0]), sizeof(points[0]) / sizeof(points[0][0]));
-	s.rotate(ax, ay);
-	s.draw();
+	s.draw(ax, ay);
 	glFlush();
 }
 
@@ -94,7 +93,7 @@ void keyPressed(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char** argv) {
-	ShowWindow(GetConsoleWindow(), SW_HIDE); //Hide console
+	//ShowWindow(GetConsoleWindow(), SW_HIDE); //Hide console
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowPosition(INITIAL_WINDOW_X, INITIAL_WINDOW_Y);

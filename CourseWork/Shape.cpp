@@ -2,32 +2,30 @@
 
 #include <GL/glut.h>
 #include <vector>
+#include <math.h>
 #include <iostream>
 #include "Shape.h"
 
-void Shape::draw() {
+void Shape::draw(float ax, float ay) {
+    rotate(ax, ay);
     updateNormals();
+    updateDotProds();
     for (int i = 0; i < sides.size(); i++) {
-        glBegin(GL_POLYGON);
-        for (int j = 0; j < sides.at(i).size(); j++) {
-            sides.at(i).at(j).getProjectedVertex().drawGlVertex();
+        if (dotProds.at(i) < 0) {
+            glBegin(GL_POLYGON);
+            for (int j = 0; j < sides.at(i).size(); j++) {
+                sides.at(i).at(j).getProjectedVertex().drawGlVertex();
+            }
+            glEnd();
+            glBegin(GL_LINE_LOOP);
+            for (int j = 0; j < sides.at(i).size(); j++) {
+                Vertex current = sides.at(i).at(j).getProjectedVertex();
+                current.setRGB(0, 0, 0);
+                current.drawGlVertex();
+            }
+            glEnd();
         }
-        glEnd();
-        /*glBegin(GL_LINE_LOOP);
-        for (int j = 0; j < sides.at(i).size(); j++) {
-            Vertex current = sides.at(i).at(j).getProjectedVertex();
-            current.setRGB(0, 0, 0);
-            current.drawGlVertex();
-        }
-        glEnd();*/
     }
-    glBegin(GL_POINTS);
-    for (int i = 0; i < normals.size(); i++) {
-        Vertex current = normals.at(i).getProjectedVertex();
-        current.setRGB(0, 0, 0);
-        current.drawGlVertex();
-    }
-    glEnd();
 }
 
 void Shape::rotate(float ax, float ay) {
@@ -65,4 +63,9 @@ void Shape::updateNormals() {
     normalsTemp = nullptr;
 }
 
-//For angle between normal and xy axis, arccos(|a dot b|/|a||b|-pi/2)
+void Shape::updateDotProds() {
+    dotProds.clear();
+    for (int i = 0; i < normals.size(); i++) {
+        dotProds.push_back(normals.at(i).getZ());
+    }
+}
