@@ -12,7 +12,9 @@ void display(void) {
         Cube(-1, -1, 0, 1),
         Cube(0, 0, 0, 1)
     };
-
+    for (Cube c : cubes) {
+        c.draw(ax, ay);
+    }
 	glFlush();
 }
 
