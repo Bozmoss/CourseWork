@@ -18,4 +18,7 @@ public:
     virtual float getX();
     virtual float getY();
     virtual float getZ();
+    virtual void setX(float newX);
+    virtual void setY(float newY);
+    virtual void setZ(float newZ);
 };

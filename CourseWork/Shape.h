@@ -17,7 +17,7 @@ public:
         for (int i = 0, n = 0; i < len; i++) {
             std::vector<Vertex>* side = new std::vector<Vertex>;
             for (int j = 0; j < innerLen; j++, n++) {
-                (*side).push_back(*(vArr + n));
+                side->push_back(*(vArr + n));
                 if (j == 0) {
                     Vertex v1 = Vertex((*(vArr + n + 1)).getX() - (*(vArr + n)).getX(), (*(vArr + n + 1)).getY() - (*(vArr + n)).getY(), (*(vArr + n + 1)).getZ() - (*(vArr + n)).getZ());
                     Vertex v2 = Vertex((*(vArr + n + 2)).getX() - (*(vArr + n)).getX(), (*(vArr + n + 2)).getY() - (*(vArr + n)).getY(), (*(vArr + n + 2)).getZ() - (*(vArr + n)).getZ());
