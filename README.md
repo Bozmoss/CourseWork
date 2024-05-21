@@ -1,4 +1,4 @@
-Clone into vs code then open the CourseWork.vcxproj in CourseWork
+Clone into vs code then open the CourseWork.sln
 
 File contents:
 
