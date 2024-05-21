@@ -8,8 +8,8 @@ float z = 0, ax = 0, ay = 0;
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Cube cubes[] = {
-        Cube(1, 1, 0, 1),
-        Cube(-1, -1, 0, 1),
+        Cube(2, 2, 0, 1),
+        Cube(-2, -2, 0, 1),
         Cube(0, 0, 0, 1)
     };
     for (Cube c : cubes) {
