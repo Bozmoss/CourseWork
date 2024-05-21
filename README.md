@@ -1,4 +1,4 @@
-Clone into vs code then open the CourseWork.sln
+Clone into Visual Studio then open the CourseWork.sln
 
 File contents:
 
