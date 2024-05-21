@@ -1,4 +1,4 @@
-Clone into vs code then open the CourseWork.vcxproji in CourseWork
+Clone into vs code then open the CourseWork.vcxproj in CourseWork
 
 File contents:
 
