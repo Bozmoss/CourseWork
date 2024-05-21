@@ -1,68 +1,68 @@
 #pragma once
-#include "Vertex.h"
+#include "PVector.h"
 #include "Shape.h"
 class Cube {
 private:
-    Vertex cube[12][3] = {
+    PVector cube[12][3] = {
         {
-            Vertex(1, -1, 1),
-            Vertex(1, -1, -1),
-            Vertex(-1, -1, -1)
+            PVector(1, -1, 1),
+            PVector(1, -1, -1),
+            PVector(-1, -1, -1)
 },
         {
-            Vertex(1, -1, 1),
-            Vertex(-1, -1, -1),
-            Vertex(-1, -1, 1)
+            PVector(1, -1, 1),
+            PVector(-1, -1, -1),
+            PVector(-1, -1, 1)
 },
         {
-            Vertex(1, 1, 1),
-            Vertex(1, -1, 1),
-            Vertex(-1, -1, 1)
+            PVector(1, 1, 1),
+            PVector(1, -1, 1),
+            PVector(-1, -1, 1)
 },
         {
-            Vertex(1, 1, 1),
-            Vertex(-1, -1, 1),
-            Vertex(-1, 1, 1)
+            PVector(1, 1, 1),
+            PVector(-1, -1, 1),
+            PVector(-1, 1, 1)
 },
         {
-            Vertex(-1, 1, 1),
-            Vertex(-1, -1, 1),
-            Vertex(-1, -1, -1)
+            PVector(-1, 1, 1),
+            PVector(-1, -1, 1),
+            PVector(-1, -1, -1)
 },
         {
-            Vertex(-1, 1, 1),
-            Vertex(-1, -1, -1),
-            Vertex(-1, 1, -1)
+            PVector(-1, 1, 1),
+            PVector(-1, -1, -1),
+            PVector(-1, 1, -1)
 },
         {
-            Vertex(-1, 1, -1),
-            Vertex(-1, -1, -1),
-            Vertex(1, -1, -1)
+            PVector(-1, 1, -1),
+            PVector(-1, -1, -1),
+            PVector(1, -1, -1)
 },
         {
-            Vertex(-1, 1, -1),
-            Vertex(1, -1, -1),
-            Vertex(1, 1, -1)
+            PVector(-1, 1, -1),
+            PVector(1, -1, -1),
+            PVector(1, 1, -1)
 },
         {
-            Vertex(1, 1, -1),
-            Vertex(1, -1, -1),
-            Vertex(1, -1, 1)
+            PVector(1, 1, -1),
+            PVector(1, -1, -1),
+            PVector(1, -1, 1)
 },
         {
-            Vertex(1, 1, -1),
-            Vertex(1, -1, 1),
-            Vertex(1, 1, 1)
+            PVector(1, 1, -1),
+            PVector(1, -1, 1),
+            PVector(1, 1, 1)
 },
         {
-            Vertex(1, 1, -1),
-            Vertex(1, 1, 1),
-            Vertex(-1, 1, 1)
+            PVector(1, 1, -1),
+            PVector(1, 1, 1),
+            PVector(-1, 1, 1)
 },
         {
-            Vertex(1, 1, -1),
-            Vertex(-1, 1, 1),
-            Vertex(-1, 1, -1)
+            PVector(1, 1, -1),
+            PVector(-1, 1, 1),
+            PVector(-1, 1, -1)
 }
     };
     Shape* s;
@@ -75,8 +75,8 @@ public:
                 cube[i][j].setZ(scalar * (cube[i][j].getZ()) + cz);
             }
         }
-        Vertex* start = &cube[0][0];
-        s = new Shape(start, sizeof(cube) / sizeof(cube[0]), sizeof(cube[0]) / sizeof(cube[0][0]));
+        PVector* start = &cube[0][0];
+        s = new Shape(start, sizeof(cube) / sizeof(cube[0]), sizeof(cube[0]) / sizeof(cube[0][0]), cx, cy, cz);
     }
     virtual void draw(float ax, float ay);
 };

@@ -5,38 +5,42 @@
 #include <math.h>
 #include <iostream>
 #include "Shape.h"
+#include "GLOBAL.h"
 
 void Shape::draw(float ax, float ay) {
+    transform = transform.rotate(ax, ay);
     rotate(ax, ay);
     updateNormals();
-    updateDotProds();
+    calculateSideClearance();
     for (int i = 0; i < sides.size(); i++) {
-        if (dotProds.at(i) > 0) {
+        //if (camVecAngles.at(i) > 1) {
             glBegin(GL_POLYGON);
             for (int j = 0; j < sides.at(i).size(); j++) {
-                sides.at(i).at(j).getProjectedVertex().drawGlVertex();
+                sides.at(i).at(j).getProjectedPVector().drawGlPVector();
             }
             glEnd();
             glBegin(GL_LINE_LOOP);
             for (int j = 0; j < sides.at(i).size(); j++) {
-                Vertex current = sides.at(i).at(j).getProjectedVertex();
+                PVector current = sides.at(i).at(j).getProjectedPVector();
                 current.setRGB(0, 0, 0);
-                current.drawGlVertex();
+                current.drawGlPVector();
             }
             glEnd();
-        }
+        //}
     }
-    /*glBegin(GL_POINTS);
+    glBegin(GL_POINTS);
     for (int i = 0; i < normals.size(); i++) {
-        normals.at(i).getProjectedVertex().drawGlVertex();
+        PVector current = normals.at(i).getProjectedPVector();
+        current.setRGB(0, 1, 1);
+        current.drawGlPVector();
     }
-    glEnd();*/
+    glEnd();
 }
 
 void Shape::rotate(float ax, float ay) {
-    std::vector<std::vector<Vertex>>* sidesTemp = new std::vector<std::vector<Vertex>>;
+    std::vector<std::vector<PVector>>* sidesTemp = new std::vector<std::vector<PVector>>;
     for (int i = 0; i < sides.size(); i++) {
-        std::vector<Vertex>* side = new std::vector<Vertex>;
+        std::vector<PVector>* side = new std::vector<PVector>;
         for (int j = 0; j < sides.at(i).size(); j++) {
             side->push_back(sides.at(i).at(j).rotate(ax, ay));
         }
@@ -50,16 +54,15 @@ void Shape::rotate(float ax, float ay) {
 }
 
 void Shape::updateNormals() {
-    std::vector<Vertex>* normalsTemp = new std::vector<Vertex>;
+    std::vector<PVector>* normalsTemp = new std::vector<PVector>;
     for (int i = 0; i < sides.size(); i++) {
         for (int j = 0; j < sides.at(i).size(); j++) {
             if (j == 0) {
-                Vertex v1 = Vertex(sides.at(i).at(j+1).getX() - sides.at(i).at(j).getX(), sides.at(i).at(j+1).getY() - sides.at(i).at(j).getY(), sides.at(i).at(j+1).getZ() - sides.at(i).at(j).getZ());
-                Vertex v2 = Vertex(sides.at(i).at(j+2).getX() - sides.at(i).at(j).getX(), sides.at(i).at(j+2).getY() - sides.at(i).at(j).getY(), sides.at(i).at(j+2).getZ() - sides.at(i).at(j).getZ());
-                Vertex cross = Vertex(v1.getY() * v2.getZ() - v1.getZ() * v2.getY(), v1.getZ() * v2.getX() - v1.getX() * v2.getZ(), v1.getX() * v2.getY() - v1.getY() * v2.getX());
-                normalsTemp->push_back(Vertex(cross.getX() / std::sqrt(cross.getX() * cross.getX() + cross.getY() * cross.getY() + cross.getZ() * cross.getZ()),
-                    cross.getY() / std::sqrt(cross.getX() * cross.getX() + cross.getY() * cross.getY() + cross.getZ() * cross.getZ()),
-                    cross.getZ() / std::sqrt(cross.getX() * cross.getX() + cross.getY() * cross.getY() + cross.getZ() * cross.getZ())));
+                PVector v1 = PVector(sides.at(i).at(j+1).getX() - sides.at(i).at(j).getX(), sides.at(i).at(j+1).getY() - sides.at(i).at(j).getY(), sides.at(i).at(j+1).getZ() - sides.at(i).at(j).getZ());
+                PVector v2 = PVector(sides.at(i).at(j+2).getX() - sides.at(i).at(j).getX(), sides.at(i).at(j+2).getY() - sides.at(i).at(j).getY(), sides.at(i).at(j+2).getZ() - sides.at(i).at(j).getZ());
+                PVector cross = v1.crossProd(v2);
+                cross.scale(1 / cross.getMagnitude());
+                normalsTemp->push_back(cross.transform(transform));
             }
         }
     }
@@ -68,9 +71,14 @@ void Shape::updateNormals() {
     normalsTemp = nullptr;
 }
 
-void Shape::updateDotProds() {
-    dotProds.clear();
+void Shape::calculateSideClearance() {
+    camVecAngles.clear();
     for (int i = 0; i < normals.size(); i++) {
-        dotProds.push_back(normals.at(i).getZ());
+        PVector camVec(normals.at(i).getX() - WIDTH, normals.at(i).getY(), normals.at(i).getZ() - DEPTH);
+        camVecAngles.push_back(180 - 180/M_PI * acos(abs(camVec.dotProd(normals.at(i)))/(camVec.getMagnitude() * normals.at(i).getMagnitude())));
+        if (i % 2 == 0) {
+            std::cout << camVecAngles.at(i) << " ";
+        }
     }
+    std::cout << std::endl;
 }

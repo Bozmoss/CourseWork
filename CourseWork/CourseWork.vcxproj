@@ -131,7 +131,7 @@
     <ClCompile Include="DebugLines.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Shape.cpp" />
-    <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="PVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -141,7 +141,7 @@
     <ClInclude Include="DebugLines.h" />
     <ClInclude Include="GLOBAL.h" />
     <ClInclude Include="Shape.h" />
-    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="PVector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
