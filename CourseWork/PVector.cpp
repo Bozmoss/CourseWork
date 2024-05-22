@@ -20,7 +20,7 @@ PVector PVector::crossProd(PVector v) {
     return PVector(y * v.getZ() - z * v.getY(), z * v.getX() - x * v.getZ(), x * v.getY() - y * v.getX());
 }
 
-float PVector::dotProd(PVector v) {
+double PVector::dotProd(PVector v) {
     return x * v.getX() + y * v.getY() + z * v.getZ();
 }
 
@@ -32,7 +32,7 @@ void PVector::scale(float m) {
     x *= m, y *= m, z *= m;
 }
 
-float PVector::getMagnitude() {
+double PVector::getMagnitude() {
     return sqrt(x * x + y * y + z * z);
 }
 

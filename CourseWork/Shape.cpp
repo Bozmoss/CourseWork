@@ -13,7 +13,7 @@ void Shape::draw(float ax, float ay) {
     updateNormals();
     calculateSideClearance();
     for (int i = 0; i < sides.size(); i++) {
-        //if (camVecAngles.at(i) > 1) {
+        if (camVecAngles.at(i) > 0) {
             glBegin(GL_POLYGON);
             for (int j = 0; j < sides.at(i).size(); j++) {
                 sides.at(i).at(j).getProjectedPVector().drawGlPVector();
@@ -26,7 +26,7 @@ void Shape::draw(float ax, float ay) {
                 current.drawGlPVector();
             }
             glEnd();
-        //}
+        }
     }
     glBegin(GL_POINTS);
     for (int i = 0; i < normals.size(); i++) {
@@ -73,9 +73,17 @@ void Shape::updateNormals() {
 
 void Shape::calculateSideClearance() {
     camVecAngles.clear();
+    PVector v(0, 0, 1-DEPTH);
     for (int i = 0; i < normals.size(); i++) {
-        PVector camVec(normals.at(i).getX() - WIDTH, normals.at(i).getY(), normals.at(i).getZ() - DEPTH);
-        camVecAngles.push_back(180 - 180/M_PI * acos(abs(camVec.dotProd(normals.at(i)))/(camVec.getMagnitude() * normals.at(i).getMagnitude())));
+        PVector camVec(normals.at(i).getX(), normals.at(i).getY(), normals.at(i).getZ());
+        //if (i == 0) {
+            glBegin(GL_LINE_LOOP);
+            v.getProjectedPVector().drawGlPVector();
+            normals.at(i).getProjectedPVector().drawGlPVector();
+            glEnd();
+        //}
+        camVecAngles.push_back(acos(camVec.dotProd(v)/(camVec.getMagnitude() * v.getMagnitude())) * 180/M_PI - 90);
+        //camVecAngles.push_back(camVec.getMagnitude());
         if (i % 2 == 0) {
             std::cout << camVecAngles.at(i) << " ";
         }

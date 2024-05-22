@@ -15,10 +15,10 @@ public:
 	virtual PVector getProjectedPVector();
 	virtual PVector rotate(float ax, float ay);
     virtual PVector crossProd(PVector v);
-    virtual float dotProd(PVector v);
+    virtual double dotProd(PVector v);
     virtual PVector transform(PVector v);
     virtual void scale(float m);
-    virtual float getMagnitude();
+    virtual double getMagnitude();
 	virtual void setRGB(float r, float g, float b);
     virtual float getX();
     virtual float getY();

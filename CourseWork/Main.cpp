@@ -9,7 +9,7 @@ void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Cube cubes[] = {
         Cube(2, 2, 0, 0.5),
-        //Cube(-2, -2, 0, 1),
+        //Cube(-2, -2, 0, 0.5),
         //Cube(0, 0, 0, 1)
     };
     for (Cube c : cubes) {

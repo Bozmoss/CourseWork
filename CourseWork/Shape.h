@@ -8,7 +8,7 @@ class Shape {
 private:
     std::vector<std::vector<PVector>> sides;
     std::vector<PVector> normals;
-    std::vector<float> camVecAngles;
+    std::vector<double> camVecAngles;
     PVector transform = PVector(0, 0, 0);
     virtual void rotate(float ax, float ay);
     virtual void updateNormals();
