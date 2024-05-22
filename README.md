@@ -18,4 +18,4 @@ File contents:
   Position vector class used for storing coordinate positions with vector methods, takes in an x, y, and z component with optional rgb components (default 1 1 1)
 
 - Shape.cpp, Shape.h:
-  Draws a 3D shape from a 2D array of PVectors, given the array's length and the length of the arrays in the 2D aray, with optional coordinate offsets to accomodate for side normals
+  Draws a 3D shape from a 2D array of PVectors, given the array's length and the length of the arrays in the 2D array, with optional coordinate offsets to accomodate for side normals
