@@ -5,9 +5,6 @@ File contents:
 - Cube.h, Cube.cpp:
   Class that renders a cube in a set position on the screen, default is (0, 0, 0), with a scalar (default 1) that affects the side length
 
-- DebugLines.h, DebugLines.cpp:
-  Draws the lines in the positive x, y, and z directions to aid debugging
-
 - GLOBAL.h:
   Stores the global variables used across multiple files
 
@@ -19,3 +16,6 @@ File contents:
 
 - Shape.cpp, Shape.h:
   Draws a 3D shape from a 2D array of PVectors, given the array's length and the length of the arrays in the 2D array, with optional coordinate offsets to accomodate for side normals
+
+- AffineMatrix.h, AffineMatrix.cpp
+  Matrix class for scales, rotations, and translations
