@@ -1,7 +1,9 @@
 #pragma once
+#include "AffineMatrix.h"
 class PVector {
 private:
 	float x, y, z, r, g, b;
+    virtual PVector matrixTransform(AffineMatrix m);
 public:
 	PVector(float x, float y, float z, float r = 1.0, float g = 1.0, float b = 1.0) {
 		this->x = x;

@@ -6,14 +6,18 @@
 #include <iostream>
 #include "Shape.h"
 #include "GLOBAL.h"
+#include "AffineMatrix.h"
 
 void Shape::draw(float ax, float ay) {
     transform = transform.rotate(ax, ay);
     rotate(ax, ay);
     updateNormals();
     calculateSideClearance();
+    AffineMatrix m(3, 'x');
+    AffineMatrix inv = m.inverse();
+    inv.print();
     for (int i = 0; i < sides.size(); i++) {
-        if (camVecAngles.at(i) > 0) {
+        if (clearances.at(i) > cullpoints.at(i)) {
             glBegin(GL_POLYGON);
             for (int j = 0; j < sides.at(i).size(); j++) {
                 sides.at(i).at(j).getProjectedPVector().drawGlPVector();
@@ -72,21 +76,10 @@ void Shape::updateNormals() {
 }
 
 void Shape::calculateSideClearance() {
-    camVecAngles.clear();
-    PVector v(0, 0, 1-DEPTH);
+    clearances.clear();
+    cullpoints.clear();
     for (int i = 0; i < normals.size(); i++) {
-        PVector camVec(normals.at(i).getX(), normals.at(i).getY(), normals.at(i).getZ());
-        //if (i == 0) {
-            glBegin(GL_LINE_LOOP);
-            v.getProjectedPVector().drawGlPVector();
-            normals.at(i).getProjectedPVector().drawGlPVector();
-            glEnd();
-        //}
-        camVecAngles.push_back(acos(camVec.dotProd(v)/(camVec.getMagnitude() * v.getMagnitude())) * 180/M_PI - 90);
-        //camVecAngles.push_back(camVec.getMagnitude());
-        if (i % 2 == 0) {
-            std::cout << camVecAngles.at(i) << " ";
-        }
+        clearances.push_back(normals.at(i).dotProd(CAM));
+        cullpoints.push_back(normals.at(i).dotProd(sides.at(i).at(1)));
     }
-    std::cout << std::endl;
 }

@@ -3,13 +3,15 @@
 #include <iostream>
 #include <cmath>
 #include "PVector.h"
-using namespace std;
+#include "GLOBAL.h"
 class Shape {
 private:
     std::vector<std::vector<PVector>> sides;
     std::vector<PVector> normals;
-    std::vector<double> camVecAngles;
+    std::vector<double> clearances;
+    std::vector<double> cullpoints;
     PVector transform = PVector(0, 0, 0);
+    PVector CAM = PVector(0, 0, -DEPTH);
     virtual void rotate(float ax, float ay);
     virtual void updateNormals();
     virtual void calculateSideClearance();

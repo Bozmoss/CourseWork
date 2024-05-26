@@ -2,6 +2,7 @@
 #include <cmath>
 #include "PVector.h"
 #include "GLOBAL.h"
+#include "AffineMatrix.h"
 
 void PVector::drawGlPVector() {
 	glColor3f(r, g, b);
@@ -13,7 +14,10 @@ PVector PVector::getProjectedPVector() {
 }
 
 PVector PVector::rotate(float ax, float ay) {
-	return PVector(x * cos(ay) + z * sin(ay), x * sin(ax) * sin(ay) - z * sin(ax) * cos(ay) + y * cos(ax), -x * cos(ax) * sin(ay) + z * cos(ax) * cos(ay) + y * sin(ax), r, g, b);
+    AffineMatrix X(ax, 'x');
+    AffineMatrix Y(ay, 'y');
+    AffineMatrix rotation = X.multiply(Y);
+    return matrixTransform(rotation);
 }
 
 PVector PVector::crossProd(PVector v) {
@@ -64,4 +68,8 @@ void PVector::setY(float newY) {
 
 void PVector::setZ(float newZ) {
     z = newZ;
+}
+
+PVector PVector::matrixTransform(AffineMatrix m) {
+    return PVector(m.atPos(0, 0) * x + m.atPos(0, 1) * y + m.atPos(0, 2) * z + m.atPos(0, 3), m.atPos(1, 0) * x + m.atPos(1, 1) * y + m.atPos(1, 2) * z + m.atPos(1, 3), m.atPos(2, 0) * x + m.atPos(2, 1) * y + m.atPos(2, 2) * z + m.atPos(2, 3));
 }

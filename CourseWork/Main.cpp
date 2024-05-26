@@ -8,9 +8,8 @@ float z = 0, ax = 0, ay = 0;
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     Cube cubes[] = {
-        Cube(2, 2, 0, 0.5),
-        //Cube(-2, -2, 0, 0.5),
-        //Cube(0, 0, 0, 1)
+        Cube(0, 0, 0, 0.5),
+        Cube(2, 2, 0, 0.5)
     };
     for (Cube c : cubes) {
         c.draw(ax, ay);
@@ -20,16 +19,16 @@ void display(void) {
 
 void keyPressed(unsigned char key, int x, int y) {
 	if (key == 'w') {
-		ax -= 0.1;
-	}
-	if (key == 's') {
 		ax += 0.1;
 	}
+	if (key == 's') {
+		ax -= 0.1;
+	}
 	if (key == 'd') {
-		ay += 0.1;
+		ay -= 0.1;
 	}
 	if (key == 'a') {
-		ay -= 0.1;
+		ay += 0.1;
 	}
 	glutPostRedisplay();
 }
