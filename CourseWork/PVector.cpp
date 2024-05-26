@@ -20,6 +20,17 @@ PVector PVector::rotate(float ax, float ay) {
     return matrixTransform(rotation);
 }
 
+PVector PVector::rotate(float ax, float ay, PVector *_CAM) {
+    AffineMatrix X(ax, 'x');
+    AffineMatrix Y(ay, 'y');
+    AffineMatrix rotation = X.multiply(Y);
+    return matrixTransform(rotation);
+    if (_CAM != NULL) {
+        PVector temp = _CAM->matrixTransform(rotation.inverse());
+        _CAM = &(temp);
+    }
+}
+
 PVector PVector::crossProd(PVector v) {
     return PVector(y * v.getZ() - z * v.getY(), z * v.getX() - x * v.getZ(), x * v.getY() - y * v.getX());
 }
@@ -30,6 +41,12 @@ double PVector::dotProd(PVector v) {
 
 PVector PVector::transform(PVector v) {
     return PVector(x + v.getX(), y + v.getY(), z + v.getZ());
+}
+
+PVector PVector::matrixTransform(AffineMatrix m) {
+    return PVector(m.atPos(0, 0) * x + m.atPos(0, 1) * y + m.atPos(0, 2) * z + m.atPos(0, 3),
+        m.atPos(1, 0) * x + m.atPos(1, 1) * y + m.atPos(1, 2) * z + m.atPos(1, 3),
+        m.atPos(2, 0) * x + m.atPos(2, 1) * y + m.atPos(2, 2) * z + m.atPos(2, 3));
 }
 
 void PVector::scale(float m) {
@@ -68,8 +85,4 @@ void PVector::setY(float newY) {
 
 void PVector::setZ(float newZ) {
     z = newZ;
-}
-
-PVector PVector::matrixTransform(AffineMatrix m) {
-    return PVector(m.atPos(0, 0) * x + m.atPos(0, 1) * y + m.atPos(0, 2) * z + m.atPos(0, 3), m.atPos(1, 0) * x + m.atPos(1, 1) * y + m.atPos(1, 2) * z + m.atPos(1, 3), m.atPos(2, 0) * x + m.atPos(2, 1) * y + m.atPos(2, 2) * z + m.atPos(2, 3));
 }

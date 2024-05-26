@@ -6,16 +6,12 @@
 #include <iostream>
 #include "Shape.h"
 #include "GLOBAL.h"
-#include "AffineMatrix.h"
 
 void Shape::draw(float ax, float ay) {
-    transform = transform.rotate(ax, ay);
+    transform = transform.rotate(ax, ay, &CAM);
     rotate(ax, ay);
     updateNormals();
     calculateSideClearance();
-    AffineMatrix m(3, 'x');
-    AffineMatrix inv = m.inverse();
-    inv.print();
     for (int i = 0; i < sides.size(); i++) {
         if (clearances.at(i) > cullpoints.at(i)) {
             glBegin(GL_POLYGON);
@@ -46,7 +42,7 @@ void Shape::rotate(float ax, float ay) {
     for (int i = 0; i < sides.size(); i++) {
         std::vector<PVector>* side = new std::vector<PVector>;
         for (int j = 0; j < sides.at(i).size(); j++) {
-            side->push_back(sides.at(i).at(j).rotate(ax, ay));
+            side->push_back(sides.at(i).at(j).rotate(ax, ay, &CAM)); //instead of passing pointer to function, try making a new function that happens after the rotation to apply the inverse to the camera
         }
         sidesTemp->push_back(*side);
         delete side;

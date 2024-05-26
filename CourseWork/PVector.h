@@ -1,9 +1,10 @@
 #pragma once
+#include "GLOBAL.h"
 #include "AffineMatrix.h"
+
 class PVector {
 private:
 	float x, y, z, r, g, b;
-    virtual PVector matrixTransform(AffineMatrix m);
 public:
 	PVector(float x, float y, float z, float r = 1.0, float g = 1.0, float b = 1.0) {
 		this->x = x;
@@ -15,10 +16,12 @@ public:
 	}
 	virtual void drawGlPVector();
 	virtual PVector getProjectedPVector();
-	virtual PVector rotate(float ax, float ay);
+    virtual PVector rotate(float ax, float ay);
+	virtual PVector rotate(float ax, float ay, PVector *_CAM = nullptr);
     virtual PVector crossProd(PVector v);
     virtual double dotProd(PVector v);
     virtual PVector transform(PVector v);
+    virtual PVector matrixTransform(AffineMatrix m);
     virtual void scale(float m);
     virtual double getMagnitude();
 	virtual void setRGB(float r, float g, float b);

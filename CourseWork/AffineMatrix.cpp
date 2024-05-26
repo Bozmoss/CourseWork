@@ -1,9 +1,8 @@
-#include "AffineMatrix.h"
-#include "PVector.h"
 #include <algorithm>
 #include <vector>
 #include <stdio.h>
 #include <iostream>
+#include "AffineMatrix.h"
 
 void AffineMatrix::scale(double scalar) {
     /*auto scale = [&](const double x)
@@ -27,12 +26,16 @@ AffineMatrix AffineMatrix::add(AffineMatrix m) {
 
 AffineMatrix AffineMatrix::multiply(AffineMatrix m) {
     std::vector<std::vector<double>> newMat;
-    for (int i = 0; i < mat.size(); i++) {
-        int n = 0;
-        for (int j = 0; j < mat.at(i).size(); j++) {
-            n += atPos(i, j) * atPos(j, i);
+    for (int i = 0; i < 4; i++) {
+        std::vector<double> temp;
+        for (int j = 0; j < 4; j++) {
+            double n = 0;
+            for (int k = 0; k < 4; k++) {
+                n += atPos(i, k) * m.atPos(k, j);
+            }
+            temp.push_back(n);
         }
-        newMat.at(i).push_back(n);
+        newMat.push_back(temp);
     }
     return AffineMatrix(newMat);
 }

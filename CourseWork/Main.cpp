@@ -19,16 +19,16 @@ void display(void) {
 
 void keyPressed(unsigned char key, int x, int y) {
 	if (key == 'w') {
-		ax += 0.1;
-	}
-	if (key == 's') {
 		ax -= 0.1;
 	}
+	if (key == 's') {
+		ax += 0.1;
+	}
 	if (key == 'd') {
-		ay -= 0.1;
+		ay += 0.1;
 	}
 	if (key == 'a') {
-		ay += 0.1;
+		ay -= 0.1;
 	}
 	glutPostRedisplay();
 }

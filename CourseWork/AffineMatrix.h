@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <cmath>
-#include "PVector.h"
+
 class AffineMatrix {
 private:
     std::vector<std::vector<double>> mat;
@@ -16,15 +16,6 @@ public:
         mat = m;
     }
     AffineMatrix(std::vector<std::vector<double>> m) {
-        mat = m;
-    }
-    AffineMatrix(PVector transform) {
-        std::vector<std::vector<double>> m{
-            {1, 0, 0, transform.getX()},
-            {0, 1, 0, transform.getY()},
-            {0, 0, 1, transform.getZ()},
-            {0, 0, 0, 1}
-        };
         mat = m;
     }
     //modes: (s)calar, rotations: (x), (y), (z)
