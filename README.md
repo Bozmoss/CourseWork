@@ -17,5 +17,5 @@ File contents:
 - Shape.cpp, Shape.h:
   Draws a 3D shape from a 2D array of PVectors, given the array's length and the length of the arrays in the 2D array, with optional coordinate offsets to accomodate for side normals
 
-- AffineMatrix.h, AffineMatrix.cpp
+- AffineMatrix.h, AffineMatrix.cpp:
   Matrix class for scales, rotations, and translations
