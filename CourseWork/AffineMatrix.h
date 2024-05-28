@@ -67,6 +67,16 @@ public:
         }
         }
     }
+    //{x, y, z}
+    AffineMatrix(double x, double y, double z) {
+        std::vector<std::vector<double>> m{
+            {1, 0, 0, x},
+            {0, 1, 0, y},
+            {0, 0, 1, z},
+            {0, 0, 0, 1}
+        };
+        mat = m;
+    }
     virtual void scale(double scalar);
     virtual AffineMatrix add(AffineMatrix m);
     virtual AffineMatrix multiply(AffineMatrix m);

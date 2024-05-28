@@ -17,9 +17,11 @@ public:
 	virtual void drawGlPVector();
 	virtual PVector getProjectedPVector();
     virtual PVector rotate(float ax, float ay);
-	virtual PVector rotate(float ax, float ay, PVector *_CAM = nullptr);
+	virtual PVector rotate(float ax, float ay, PVector &_CAM);
+    virtual PVector rotate(float ax, float ay);
     virtual PVector crossProd(PVector v);
     virtual double dotProd(PVector v);
+    virtual PVector transform(PVector v, PVector &transformInv);
     virtual PVector transform(PVector v);
     virtual PVector matrixTransform(AffineMatrix m);
     virtual void scale(float m);

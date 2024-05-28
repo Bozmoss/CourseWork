@@ -8,7 +8,7 @@
 #include "GLOBAL.h"
 
 void Shape::draw(float ax, float ay) {
-    transform = transform.rotate(ax, ay, &CAM);
+    transform = transform.rotate(ax, ay);
     rotate(ax, ay);
     updateNormals();
     calculateSideClearance();
@@ -28,21 +28,15 @@ void Shape::draw(float ax, float ay) {
             glEnd();
         }
     }
-    glBegin(GL_POINTS);
-    for (int i = 0; i < normals.size(); i++) {
-        PVector current = normals.at(i).getProjectedPVector();
-        current.setRGB(0, 1, 1);
-        current.drawGlPVector();
-    }
-    glEnd();
 }
 
 void Shape::rotate(float ax, float ay) {
     std::vector<std::vector<PVector>>* sidesTemp = new std::vector<std::vector<PVector>>;
     for (int i = 0; i < sides.size(); i++) {
         std::vector<PVector>* side = new std::vector<PVector>;
+        PVector _CAM = camVecs.at(i);
         for (int j = 0; j < sides.at(i).size(); j++) {
-            side->push_back(sides.at(i).at(j).rotate(ax, ay, &CAM)); //instead of passing pointer to function, try making a new function that happens after the rotation to apply the inverse to the camera
+            side->push_back(sides.at(i).at(j).rotate(ax, ay, _CAM));
         }
         sidesTemp->push_back(*side);
         delete side;
@@ -75,7 +69,7 @@ void Shape::calculateSideClearance() {
     clearances.clear();
     cullpoints.clear();
     for (int i = 0; i < normals.size(); i++) {
-        clearances.push_back(normals.at(i).dotProd(CAM));
+        clearances.push_back(normals.at(i).dotProd(camVecs.at(i)));
         cullpoints.push_back(normals.at(i).dotProd(sides.at(i).at(1)));
     }
 }

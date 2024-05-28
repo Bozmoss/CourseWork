@@ -20,15 +20,19 @@ PVector PVector::rotate(float ax, float ay) {
     return matrixTransform(rotation);
 }
 
-PVector PVector::rotate(float ax, float ay, PVector *_CAM) {
+PVector PVector::rotate(float ax, float ay, PVector &_CAM) {
+    AffineMatrix X(ax, 'x');
+    AffineMatrix Y(ay, 'y');
+    AffineMatrix rotation = X.multiply(Y);
+    _CAM = _CAM.matrixTransform(rotation.inverse());
+    return matrixTransform(rotation);
+}
+
+PVector PVector::rotate(float ax, float ay) {
     AffineMatrix X(ax, 'x');
     AffineMatrix Y(ay, 'y');
     AffineMatrix rotation = X.multiply(Y);
     return matrixTransform(rotation);
-    if (_CAM != NULL) {
-        PVector temp = _CAM->matrixTransform(rotation.inverse());
-        _CAM = &(temp);
-    }
 }
 
 PVector PVector::crossProd(PVector v) {
@@ -39,8 +43,15 @@ double PVector::dotProd(PVector v) {
     return x * v.getX() + y * v.getY() + z * v.getZ();
 }
 
+PVector PVector::transform(PVector v, PVector &transformInv) {
+    AffineMatrix T(v.getX(), v.getY(), v.getZ());
+    transformInv = matrixTransform(T.inverse());
+    return matrixTransform(T);
+}
+
 PVector PVector::transform(PVector v) {
-    return PVector(x + v.getX(), y + v.getY(), z + v.getZ());
+    AffineMatrix T(v.getX(), v.getY(), v.getZ());
+    return matrixTransform(T);
 }
 
 PVector PVector::matrixTransform(AffineMatrix m) {

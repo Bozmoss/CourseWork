@@ -84,7 +84,7 @@ AffineMatrix AffineMatrix::inverse() {
         }
     }
     if (inverse(&m[0], &inv[0]) == false) {
-        throw (9999); //9999 determinant of 0 error
+        throw std::runtime_error("Affine matrix has determinant of 0, cannot invert");
     }
     for (int i = 0, n = 0; i < mat.size(); i++) {
         std::vector<double> temp;

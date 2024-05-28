@@ -8,16 +8,20 @@ class Shape {
 private:
     std::vector<std::vector<PVector>> sides;
     std::vector<PVector> normals;
+    std::vector<PVector> camVecs;
     std::vector<double> clearances;
     std::vector<double> cullpoints;
     PVector transform = PVector(0, 0, 0);
+    PVector transformInv = PVector(0, 0, 0);
     PVector CAM = PVector(0, 0, -DEPTH);
     virtual void rotate(float ax, float ay);
     virtual void updateNormals();
     virtual void calculateSideClearance();
 public:
     Shape(PVector* vArr, int len, int innerLen, float xoffset = 0, float yoffset = 0, float zoffset = 0) {
-        transform = transform.transform(PVector(xoffset, yoffset, zoffset));
+        if (xoffset != 0 || yoffset != 0 || zoffset != 0) {
+            transform = transform.transform(PVector(xoffset, yoffset, zoffset));
+        }
         for (int i = 0, n = 0; i < len; i++) {
             std::vector<PVector>* side = new std::vector<PVector>;
             for (int j = 0; j < innerLen; j++, n++) {
@@ -28,6 +32,7 @@ public:
                     PVector cross = v1.crossProd(v2);
                     cross.scale(1 / cross.getMagnitude());
                     normals.push_back(cross.transform(transform));
+                    camVecs.push_back(CAM);
                 }
             }
             sides.push_back(*side);
