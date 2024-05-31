@@ -20,7 +20,7 @@ private:
 public:
     Shape(PVector* vArr, int len, int innerLen, float xoffset = 0, float yoffset = 0, float zoffset = 0) {
         if (xoffset != 0 || yoffset != 0 || zoffset != 0) {
-            transform = transform.transform(PVector(xoffset, yoffset, zoffset));
+            transform = transform.transform(PVector(xoffset, yoffset, zoffset), transformInv);
         }
         for (int i = 0, n = 0; i < len; i++) {
             std::vector<PVector>* side = new std::vector<PVector>;
@@ -32,12 +32,15 @@ public:
                     PVector cross = v1.crossProd(v2);
                     cross.scale(1 / cross.getMagnitude());
                     normals.push_back(cross.transform(transform));
-                    camVecs.push_back(CAM);
+                    camVecs.push_back(CAM.transform(transformInv));
                 }
             }
             sides.push_back(*side);
             delete side;
             side = nullptr;
+        }
+        for (int i = 0; i < normals.size(); i++) {
+            cullpoints.push_back(normals.at(i).dotProd(sides.at(i).at(1)));
         }
     }
     virtual void draw(float ax, float ay);

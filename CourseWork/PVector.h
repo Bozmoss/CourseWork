@@ -18,7 +18,6 @@ public:
 	virtual PVector getProjectedPVector();
     virtual PVector rotate(float ax, float ay);
 	virtual PVector rotate(float ax, float ay, PVector &_CAM);
-    virtual PVector rotate(float ax, float ay);
     virtual PVector crossProd(PVector v);
     virtual double dotProd(PVector v);
     virtual PVector transform(PVector v, PVector &transformInv);

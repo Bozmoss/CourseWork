@@ -70,6 +70,5 @@ void Shape::calculateSideClearance() {
     cullpoints.clear();
     for (int i = 0; i < normals.size(); i++) {
         clearances.push_back(normals.at(i).dotProd(camVecs.at(i)));
-        cullpoints.push_back(normals.at(i).dotProd(sides.at(i).at(1)));
     }
 }

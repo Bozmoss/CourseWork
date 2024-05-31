@@ -28,13 +28,6 @@ PVector PVector::rotate(float ax, float ay, PVector &_CAM) {
     return matrixTransform(rotation);
 }
 
-PVector PVector::rotate(float ax, float ay) {
-    AffineMatrix X(ax, 'x');
-    AffineMatrix Y(ay, 'y');
-    AffineMatrix rotation = X.multiply(Y);
-    return matrixTransform(rotation);
-}
-
 PVector PVector::crossProd(PVector v) {
     return PVector(y * v.getZ() - z * v.getY(), z * v.getX() - x * v.getZ(), x * v.getY() - y * v.getX());
 }
