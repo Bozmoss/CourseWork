@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <stack>
 #include <iostream>
 #include <cmath>
 #include "PVector.h"
@@ -11,16 +12,17 @@ private:
     std::vector<PVector> camVecs;
     std::vector<double> clearances;
     std::vector<double> cullpoints;
-    PVector transform = PVector(0, 0, 0);
-    PVector transformInv = PVector(0, 0, 0);
+    std::stack<AffineMatrix> matrixStack;
+    AffineMatrix transform;
     PVector CAM = PVector(0, 0, -DEPTH);
-    virtual void rotate(float ax, float ay);
+    virtual AffineMatrix rotate(float ax, float ay);
     virtual void updateNormals();
     virtual void calculateSideClearance();
 public:
     Shape(PVector* vArr, int len, int innerLen, float xoffset = 0, float yoffset = 0, float zoffset = 0) {
         if (xoffset != 0 || yoffset != 0 || zoffset != 0) {
-            transform = transform.transform(PVector(xoffset, yoffset, zoffset), transformInv);
+            transform = AffineMatrix(xoffset, yoffset, zoffset);
+            matrixStack.push(transform);
         }
         for (int i = 0, n = 0; i < len; i++) {
             std::vector<PVector>* side = new std::vector<PVector>;
@@ -32,7 +34,6 @@ public:
                     PVector cross = v1.crossProd(v2);
                     cross.scale(1 / cross.getMagnitude());
                     normals.push_back(cross.transform(transform));
-                    camVecs.push_back(CAM.transform(transformInv));
                 }
             }
             sides.push_back(*side);

@@ -8,8 +8,9 @@
 #include "GLOBAL.h"
 
 void Shape::draw(float ax, float ay) {
-    transform = transform.rotate(ax, ay);
-    rotate(ax, ay);
+    AffineMatrix rotation = rotate(ax, ay);
+    transform = rotation.multiply(transform);
+    matrixStack.push(rotation);
     updateNormals();
     calculateSideClearance();
     for (int i = 0; i < sides.size(); i++) {
@@ -27,16 +28,23 @@ void Shape::draw(float ax, float ay) {
             }
             glEnd();
         }
+        glBegin(GL_POINTS);
+        for (int i = 0; i < normals.size(); i++) {
+            PVector current = normals.at(i).getProjectedPVector();
+            current.setRGB(0, 1, 1);
+            current.drawGlPVector();
+        }
+        glEnd();
     }
+    cullpoints.clear();
 }
 
-void Shape::rotate(float ax, float ay) {
+AffineMatrix Shape::rotate(float ax, float ay) {
     std::vector<std::vector<PVector>>* sidesTemp = new std::vector<std::vector<PVector>>;
     for (int i = 0; i < sides.size(); i++) {
         std::vector<PVector>* side = new std::vector<PVector>;
-        PVector _CAM = camVecs.at(i);
         for (int j = 0; j < sides.at(i).size(); j++) {
-            side->push_back(sides.at(i).at(j).rotate(ax, ay, _CAM));
+            side->push_back(sides.at(i).at(j).rotate(ax, ay));
         }
         sidesTemp->push_back(*side);
         delete side;
@@ -45,6 +53,7 @@ void Shape::rotate(float ax, float ay) {
     sides.swap(*sidesTemp);
     delete sidesTemp;
     sidesTemp = nullptr;
+    return AffineMatrix(ax, 'x').multiply(AffineMatrix(ay, 'y'));
 }
 
 void Shape::updateNormals() {
@@ -63,12 +72,21 @@ void Shape::updateNormals() {
     normals.swap(*normalsTemp);
     delete normalsTemp;
     normalsTemp = nullptr;
+    if (cullpoints.size() == 0) {
+        for (int i = 0; i < normals.size(); i++) {
+            cullpoints.push_back(normals.at(i).dotProd(sides.at(i).at(1)));
+        }
+    }
 }
 
 void Shape::calculateSideClearance() {
     clearances.clear();
-    cullpoints.clear();
     for (int i = 0; i < normals.size(); i++) {
-        clearances.push_back(normals.at(i).dotProd(camVecs.at(i)));
+        PVector CAM = PVector(0, 0, -DEPTH);
+        while (!matrixStack.empty()) {
+            CAM = CAM.transform(matrixStack.top());
+            matrixStack.pop();
+        }
+        clearances.push_back(normals.at(i).dotProd(CAM));
     }
 }

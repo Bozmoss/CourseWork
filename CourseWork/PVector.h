@@ -20,9 +20,7 @@ public:
 	virtual PVector rotate(float ax, float ay, PVector &_CAM);
     virtual PVector crossProd(PVector v);
     virtual double dotProd(PVector v);
-    virtual PVector transform(PVector v, PVector &transformInv);
-    virtual PVector transform(PVector v);
-    virtual PVector matrixTransform(AffineMatrix m);
+    virtual PVector transform(AffineMatrix m);
     virtual void scale(float m);
     virtual double getMagnitude();
 	virtual void setRGB(float r, float g, float b);

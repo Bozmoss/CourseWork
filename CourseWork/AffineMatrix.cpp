@@ -100,6 +100,10 @@ double AffineMatrix::atPos(int r, int c) {
     return mat.at(r).at(c);
 }
 
+void AffineMatrix::set(int r, int c, double val) {
+    mat[r][c] = val;
+}
+
 void AffineMatrix::print() {
     for (std::vector<double> row : mat) {
         for (double col : row) {

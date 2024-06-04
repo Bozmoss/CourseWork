@@ -17,15 +17,15 @@ PVector PVector::rotate(float ax, float ay) {
     AffineMatrix X(ax, 'x');
     AffineMatrix Y(ay, 'y');
     AffineMatrix rotation = X.multiply(Y);
-    return matrixTransform(rotation);
+    return transform(rotation);
 }
 
 PVector PVector::rotate(float ax, float ay, PVector &_CAM) {
     AffineMatrix X(ax, 'x');
     AffineMatrix Y(ay, 'y');
     AffineMatrix rotation = X.multiply(Y);
-    _CAM = _CAM.matrixTransform(rotation.inverse());
-    return matrixTransform(rotation);
+    _CAM = _CAM.transform(rotation.inverse());
+    return transform(rotation);
 }
 
 PVector PVector::crossProd(PVector v) {
@@ -36,18 +36,7 @@ double PVector::dotProd(PVector v) {
     return x * v.getX() + y * v.getY() + z * v.getZ();
 }
 
-PVector PVector::transform(PVector v, PVector &transformInv) {
-    AffineMatrix T(v.getX(), v.getY(), v.getZ());
-    transformInv = matrixTransform(T.inverse());
-    return matrixTransform(T);
-}
-
-PVector PVector::transform(PVector v) {
-    AffineMatrix T(v.getX(), v.getY(), v.getZ());
-    return matrixTransform(T);
-}
-
-PVector PVector::matrixTransform(AffineMatrix m) {
+PVector PVector::transform(AffineMatrix m) {
     return PVector(m.atPos(0, 0) * x + m.atPos(0, 1) * y + m.atPos(0, 2) * z + m.atPos(0, 3),
         m.atPos(1, 0) * x + m.atPos(1, 1) * y + m.atPos(1, 2) * z + m.atPos(1, 3),
         m.atPos(2, 0) * x + m.atPos(2, 1) * y + m.atPos(2, 2) * z + m.atPos(2, 3));

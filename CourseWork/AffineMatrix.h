@@ -82,5 +82,6 @@ public:
     virtual AffineMatrix multiply(AffineMatrix m);
     virtual AffineMatrix inverse();
     virtual double atPos(int r, int c);
+    virtual void set(int r, int c, double val);
     virtual void print();
 };
