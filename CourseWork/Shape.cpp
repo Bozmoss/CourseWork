@@ -9,7 +9,7 @@
 
 void Shape::draw(float ax, float ay) {
     AffineMatrix rotation = rotate(ax, ay);
-    transform = rotation.multiply(transform);
+    //normalTransform = AffineMatrix(transform.atPos(0, 3))
     matrixStack.push(rotation);
     updateNormals();
     calculateSideClearance();

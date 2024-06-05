@@ -14,6 +14,7 @@ private:
     std::vector<double> cullpoints;
     std::stack<AffineMatrix> matrixStack;
     AffineMatrix transform;
+    AffineMatrix normalTransform;
     PVector CAM = PVector(0, 0, -DEPTH);
     virtual AffineMatrix rotate(float ax, float ay);
     virtual void updateNormals();
