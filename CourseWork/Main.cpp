@@ -1,4 +1,4 @@
-#include <GL/glut.h>
+/*#include <GL/glut.h>
 #include "GLOBAL.h"
 #include "Cube.h"
 
@@ -49,4 +49,4 @@ int main(int argc, char** argv) {
 	glTranslatef(WIDTH / 2, HEIGHT / 2, 0);
 	glutMainLoop();
 	return 0;
-}
+}*/

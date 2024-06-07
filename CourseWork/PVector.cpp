@@ -46,6 +46,10 @@ void PVector::scale(float m) {
     x *= m, y *= m, z *= m;
 }
 
+PVector PVector::add(PVector v) {
+    return PVector(x + v.getX(), y + v.getY(), z + v.getZ());
+}
+
 double PVector::getMagnitude() {
     return sqrt(x * x + y * y + z * z);
 }

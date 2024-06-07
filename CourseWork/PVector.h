@@ -22,6 +22,7 @@ public:
     virtual double dotProd(PVector v);
     virtual PVector transform(AffineMatrix m);
     virtual void scale(float m);
+    virtual PVector add(PVector v);
     virtual double getMagnitude();
 	virtual void setRGB(float r, float g, float b);
     virtual float getX();
