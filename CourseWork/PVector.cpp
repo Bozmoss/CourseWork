@@ -5,7 +5,6 @@
 #include "AffineMatrix.h"
 
 void PVector::drawGlPVector() {
-	glColor3f(r, g, b);
 	glVertex3f(x, y, z);
 }
 

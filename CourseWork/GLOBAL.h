@@ -3,8 +3,8 @@
 static const float WINDOW_WIDTH = 600;
 static const float WINDOW_HEIGHT = 600;
 
-static const float WIDTH = 10;
-static const float HEIGHT = 10;
+static const float WIDTH = 600;
+static const float HEIGHT = 600;
 static const float DEPTH = 10;
 
 static const float FOV = -10;
