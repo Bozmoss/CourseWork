@@ -1,56 +1,92 @@
-#include <GL/glut.h>
-#include "GLOBAL.h"
-#include "PVector.h"
-#include <iostream>
+#include <GL/glew.h>       // Include GLEW header for OpenGL extension loading
+#include <GLFW/glfw3.h>    // Include GLFW header for creating windows and handling input
+#include <iostream>        // Include for standard I/O
+#include <vector>          // Include for using std::vector
 
-float sphereSDF(PVector v) {
-    //std::cout << (sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])) << std::endl;
-    if (v.getMagnitude() - 300 < 0) {
-        getColour();
-        v.drawGlPVector();
+#include "GLOBAL.hpp"      // Assuming this includes WINDOW_WIDTH and WINDOW_HEIGHT definitions
+#include "filehandler.hpp" // Assuming this includes necessary file handling functionality
+#include "shader.hpp"      // Assuming this includes Shader class definition
+#include "program.hpp"     // Assuming this includes Program class definition
+#include "vertexbuffer.hpp"// Assuming this includes VertexBuffer class definition
+#include "indexbuffer.hpp" // Assuming this includes IndexBuffer class definition
+
+int main() {
+    // Initialize GLFW
+    int hres = glfwInit();
+    if (hres != 1) {
+        std::cout << "Failed to initialise GLFW";
+        return -1;
     }
-    return v.getMagnitude() - 300;
-}
 
-PVector normalise(PVector v) {
-    return PVector(
-        sphereSDF(PVector(v.getX() + 0.01, v.getY(), v.getZ())) - sphereSDF(PVector(v.getX() - 0.01, v.getY(), v.getZ())),
-        sphereSDF(PVector(v.getX(), v.getY() + 0.01, v.getZ())) - sphereSDF(PVector(v.getX(), v.getY() - 0.01, v.getZ())),
-        sphereSDF(PVector(v.getX(), v.getY(), v.getZ() + 0.01)) - sphereSDF(PVector(v.getX(), v.getY(), v.getZ() - 0.01))
-    );
-}
+    // Create a windowed mode window and its OpenGL context
+    auto window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "openGl", NULL, NULL);
+    glfwMakeContextCurrent(window);
 
-void getColour() {
-
-}
-
-void display(void) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glBegin(GL_POINTS);
-    for (int i = -WIDTH/2; i <= WIDTH/2; i++) {
-        for (int j = -HEIGHT/2; j <= HEIGHT/2; j++) {
-            PVector pos( i, j, 0 );
-            sphereSDF(pos);
-        }
+    // Initialize GLEW
+    if (glewInit() != GLEW_OK) {
+        std::cout << "Failed to initialise GLEW";
+        glfwTerminate();
+        return -1;
     }
-    glEnd();
-    glFlush();
-}
 
-int main(int argc, char** argv) {
-    //ShowWindow(GetConsoleWindow(), SW_HIDE); //Hide console
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowPosition(glutGet(GLUT_SCREEN_WIDTH) / 2 - WINDOW_WIDTH / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2 - WINDOW_HEIGHT / 2);
-    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("GL");
-    glClearColor(0.416, 0.353, 0.804, 0); //Black backgroud
-    glMatrixMode(GL_MODELVIEW); //Setup viewing projection
-    glLoadIdentity(); //Start with identity matrix
-    glOrtho(0.0, WIDTH, 0.0, HEIGHT, 0.0, DEPTH);
-    glutDisplayFunc(display);
-    //glutKeyboardFunc(keyPressed);
-    glTranslatef(WIDTH / 2, HEIGHT / 2, 0);
-    glutMainLoop();
+    // Load vertex and fragment shaders
+    Shader vertexShader(Shader::Type::VERTEX, "./vertex.glsl");
+    if (vertexShader.inError()) {
+        std::cout << vertexShader.error() << "\n";
+    }
+    Shader fragmentShader(Shader::Type::FRAGMENT, "./fragment.glsl");
+    if (fragmentShader.inError()) {
+        std::cout << fragmentShader.error() << "\n";
+    }
+
+    // Create and link shader program
+    Program p;
+    p.attachShader(vertexShader);
+    p.attachShader(fragmentShader);
+    p.activate();
+
+    // Define vertex data for a triangle
+    std::vector<GLfloat> verts = {
+        0.0f, 0.5f,   // Vertex 1 (X, Y)
+        -0.5f, -0.5f, // Vertex 2 (X, Y)
+        0.5f, -0.5f   // Vertex 3 (X, Y)
+    };
+
+    // Create and fill vertex buffer
+    VertexBuffer vB;
+    vB.fill(verts);
+
+    // Define index data for a triangle
+    std::vector<GLuint> indices = {
+        0, 1, 2  // Indices for the vertices of the triangle
+    };
+
+    // Create and fill index buffer
+    IndexBuffer iB;
+    iB.fill(indices);
+
+    // Get location of the "vertexPosition" attribute in the shader program
+    auto vertexPosition = glGetAttribLocation(p.handle(), "vertexPosition");
+    glEnableVertexAttribArray(vertexPosition);
+    glBindBuffer(GL_ARRAY_BUFFER, vB.handle());
+    glVertexAttribPointer(vertexPosition, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    // Rendering loop
+    while (!glfwWindowShouldClose(window)) {
+        // Clear the color buffer
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Draw the triangle using the index buffer
+        glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);
+
+        // Swap front and back buffers
+        glfwSwapBuffers(window);
+
+        // Poll for and process events
+        glfwPollEvents();
+    }
+
+    // Terminate GLFW and clean up resources
+    glfwTerminate();
     return 0;
 }

@@ -108,6 +108,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,22 +128,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AffineMatrix.cpp" />
-    <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Shape.cpp" />
-    <ClCompile Include="PVector.cpp" />
+    <ClCompile Include="filehandler.cpp" />
+    <ClCompile Include="indexbuffer.cpp" />
+    <ClCompile Include="program.cpp" />
+    <ClCompile Include="program.hpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="vertexbuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="fragment.glsl" />
     <None Include="packages.config" />
+    <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AffineMatrix.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="GLOBAL.h" />
-    <ClInclude Include="Shape.h" />
-    <ClInclude Include="PVector.h" />
+    <ClInclude Include="filehandler.hpp" />
+    <ClInclude Include="GLOBAL.hpp" />
+    <ClInclude Include="indexbuffer.hpp" />
+    <ClInclude Include="shader.hpp" />
+    <ClInclude Include="vertexbuffer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -41,8 +41,8 @@ PVector PVector::transform(AffineMatrix m) {
         m.atPos(2, 0) * x + m.atPos(2, 1) * y + m.atPos(2, 2) * z + m.atPos(2, 3));
 }
 
-void PVector::scale(float m) {
-    x *= m, y *= m, z *= m;
+PVector PVector::scale(float m) {
+    return PVector(x * m, y * m, z * m);
 }
 
 PVector PVector::add(PVector v) {
