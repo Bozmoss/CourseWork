@@ -1,4 +1,5 @@
 #include "program.hpp"
+#include <iostream>
 
 // Constructor: Initializes the shader program object
 Program::Program() {

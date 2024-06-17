@@ -130,10 +130,10 @@
   <ItemGroup>
     <ClCompile Include="filehandler.cpp" />
     <ClCompile Include="indexbuffer.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="program.hpp" />
     <ClCompile Include="shader.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />
   </ItemGroup>
   <ItemGroup>

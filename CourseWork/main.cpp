@@ -47,9 +47,10 @@ int main() {
 
     // Define vertex data for a triangle
     std::vector<GLfloat> verts = {
-        0.0f, 0.5f,   // Vertex 1 (X, Y)
-        -0.5f, -0.5f, // Vertex 2 (X, Y)
-        0.5f, -0.5f   // Vertex 3 (X, Y)
+        -1.0f, -1.0f, // Bottom-left
+         1.0f, -1.0f, // Bottom-right
+        -1.0f,  1.0f, // Top-left
+         1.0f,  1.0f  // Top-right
     };
 
     // Create and fill vertex buffer
@@ -58,7 +59,7 @@ int main() {
 
     // Define index data for a triangle
     std::vector<GLuint> indices = {
-        0, 1, 2  // Indices for the vertices of the triangle
+        0, 1, 2, 2, 1, 3  // Indices for the vertices of the triangle
     };
 
     // Create and fill index buffer
@@ -71,10 +72,16 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, vB.handle());
     glVertexAttribPointer(vertexPosition, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
+    auto i_resLocation = glGetUniformLocation(p.handle(), "i_res");
+
     // Rendering loop
     while (!glfwWindowShouldClose(window)) {
         // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT);
+
+        p.activate();
+
+        glUniform3f(i_resLocation, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f);
 
         // Draw the triangle using the index buffer
         glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);
