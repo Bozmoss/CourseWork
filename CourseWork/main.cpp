@@ -73,6 +73,8 @@ int main() {
     glVertexAttribPointer(vertexPosition, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     auto i_resLocation = glGetUniformLocation(p.handle(), "i_res");
+    auto lightPosLocation = glGetUniformLocation(p.handle(), "lightPos");
+    glUniform3f(lightPosLocation, 1.0, 1.0, 0.5);
 
     // Rendering loop
     while (!glfwWindowShouldClose(window)) {
