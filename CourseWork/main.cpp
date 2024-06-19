@@ -10,6 +10,35 @@
 #include "vertexbuffer.hpp"// Assuming this includes VertexBuffer class definition
 #include "indexbuffer.hpp" // Assuming this includes IndexBuffer class definition
 
+float aY = 0, aP = 0, aR = 0, lastX, lastY;
+bool firstMouse = true;
+
+void mouse(GLFWwindow* window, double xpos, double ypos) {
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    aP += xoffset * 0.1;
+    aY -= yoffset * 0.1;
+
+    if (aP > 89.0f)
+        aP = 89.0f;
+    if (aP < -89.0f)
+        aP = -89.0f;
+}
+
 int main() {
     // Initialize GLFW
     int hres = glfwInit();
@@ -21,6 +50,7 @@ int main() {
     // Create a windowed mode window and its OpenGL context
     auto window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "openGl", NULL, NULL);
     glfwMakeContextCurrent(window);
+    glfwSetCursorPosCallback(window, mouse);
 
     // Initialize GLEW
     if (glewInit() != GLEW_OK) {
@@ -73,8 +103,9 @@ int main() {
     glVertexAttribPointer(vertexPosition, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     auto i_resLocation = glGetUniformLocation(p.handle(), "i_res");
-    auto lightPosLocation = glGetUniformLocation(p.handle(), "lightPos");
-    glUniform3f(lightPosLocation, 1.0, 1.0, 0.5);
+    auto aYLocation = glGetUniformLocation(p.handle(), "aY");
+    auto aPLocation = glGetUniformLocation(p.handle(), "aP");
+    auto aRLocation = glGetUniformLocation(p.handle(), "aR");
 
     // Rendering loop
     while (!glfwWindowShouldClose(window)) {
@@ -84,6 +115,9 @@ int main() {
         p.activate();
 
         glUniform3f(i_resLocation, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f);
+        glUniform1f(aYLocation, aY);
+        glUniform1f(aPLocation, aP);
+        glUniform1f(aRLocation, aR);
 
         // Draw the triangle using the index buffer
         glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);

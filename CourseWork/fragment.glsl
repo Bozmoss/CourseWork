@@ -4,10 +4,16 @@
 
 out vec4 FragColor;
 uniform vec3 i_res;
+uniform float aY, aP, aR;
 vec3 lightPos = vec3(1.0, 1.0, 0.5);
 
 float sphereSDF(vec3 p, vec3 c, float r) {
     return length(c-p) - r;
+}
+
+float torusSDF(vec3 p, vec2 t) {
+    vec2 q = vec2(length(p.xz)-t.x,p.y);
+    return length(q)-t.y;
 }
 
 float unionSDF(float SDF1, float SDF2) {
@@ -22,11 +28,18 @@ float subSDF(float SDF1, float SDF2) {
     return max(SDF1, -SDF2);
 }
 
+vec3 rotateSDF(vec3 p, float yaw, float pitch, float roll) {
+    mat3 rot = mat3(
+        cos(pitch) * cos(roll), sin(yaw) * sin(pitch) * cos(roll) - cos(yaw) * sin(roll), cos(yaw) * sin(pitch) * cos(roll) + sin(yaw) * sin(roll),
+        cos(pitch) * sin(roll), sin(yaw) * sin(pitch) * sin(roll) + cos(yaw) * cos(roll), cos(yaw) * sin(pitch) * sin(roll) - sin(yaw) * cos(roll),
+        -sin(pitch), sin(yaw) * cos(pitch), cos(yaw) * cos(pitch)
+    );
+    p *= inverse(rot);
+    return p;
+}
+
 float finalSDF(vec3 p) {
-    vec3 c1 = vec3(0.5, 0.0, 0.0);
-    float r1 = 1.0;
-    vec3 c2 = vec3(-0.5, 0.0, 0.0);
-    return intersectSDF(sphereSDF(p, c1, r1), sphereSDF(p, c2, r1));
+    return torusSDF(rotateSDF(p, aY, aP, aR), vec2(0.5, 0.5));
 }
 
 vec3 calculateNormal(vec3 p) {
