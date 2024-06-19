@@ -4,7 +4,7 @@
 
 out vec4 FragColor;
 uniform vec3 i_res;
-uniform vec3 lightPos;
+vec3 lightPos = vec3(1.0, 1.0, 0.5);
 
 float sphereSDF(vec3 p, vec3 c, float r) {
     return length(c-p) - r;
@@ -23,37 +23,52 @@ float subSDF(float SDF1, float SDF2) {
 }
 
 float finalSDF(vec3 p) {
-    vec3 c1 = vec3(0.0, 0.0, 0.0);
+    vec3 c1 = vec3(0.5, 0.0, 0.0);
     float r1 = 1.0;
-    return sphereSDF(p, c1, r1);
+    vec3 c2 = vec3(-0.5, 0.0, 0.0);
+    return intersectSDF(sphereSDF(p, c1, r1), sphereSDF(p, c2, r1));
 }
 
-float rayMarch(vec3 ro, vec3 rd, float maxDist) {
+vec3 calculateNormal(vec3 p) {
+    const float eps = 0.0001;
+    const vec2 epsVec = vec2(eps, 0);
+    return normalize(vec3(
+        finalSDF(p+epsVec.xyy) - finalSDF(p-epsVec.xyy),
+        finalSDF(p+epsVec.yxy) - finalSDF(p-epsVec.yxy),
+        finalSDF(p+epsVec.yyx) - finalSDF(p-epsVec.yyx)
+    ));
+}
+
+//Ia = intensity of scene (UI), Ka = intensity of material (UI) [Ambiant component]
+//Kd = diffuse intensity (UI), Ii = diffuse intensity of ith light (UI), n = normal vector at p, li = lightPos  - p [Diffuse component]
+//c = coefficent of specular reflection (UI), v = cameraPos - p, Ks = specular intensity (UI)
+vec3 getCol(vec3 Ia, float Ka, float Kd, vec3 Ii, vec3 n, vec3 li, float c, vec3 v, float Ks) {
+    vec3 a = Ia * Ka;
+    vec3 d = max(dot(n, normalize(li)), 0.0) * Kd * Ii;
+    vec3 r = reflect(-normalize(li), n);
+    float spec = pow(max(dot(r, normalize(v)), 0.0), c);
+    vec3 s = Ks * spec * Ii;
+    return a + d + s;
+}
+
+vec3 rayMarch(vec3 ro, vec3 rd, float maxDist) {
     float t = 0.0;
+    vec3 pos;
     for (int i = 0; i < 100; i++) {
-        vec3 pos = ro + t * rd;
+        pos = ro + t * rd;
         float dist = finalSDF(pos);
         if (dist < 0.001) break;
         t += dist;
         if (t > maxDist) break;
     }
-    return t;
-}
-
-vec3 calculateNormal(vec3 p, vec3 c, float r) {
-    const float eps = 0.0001;
-    const vec2 epsVec = vec2(eps, 0);
-    return normalize(vec3(
-        sphereSDF(p+epsVec.xyy, c, r) - sphereSDF(p-epsVec.xyy, c, r),
-        sphereSDF(p+epsVec.yxy, c, r) - sphereSDF(p-epsVec.yxy, c, r),
-        sphereSDF(p+epsVec.yyx, c, r) - sphereSDF(p-epsVec.yyx, c, r)
-    ));
-}
-//Ia = intensity of scene (UI), Ka = intensity of material (UI) [Ambiant component]
-//Kd = diffuse intensity (UI), Ii = diffuse intensity of ith light (UI), n = normal vector at p, li = lightPos  - p [Diffuse component]
-//c = coefficent of specular reflection (UI), v = cameraPos - p, Ks = specular intensity (UI)
-float getCol(float Ia, float Ka, float Kd, float Ii, vec3 n, vec3 li, float c, vec3 v, float Ks) {
-    return Ia * Ka + dot(n, normalize(li)) * Kd * Ii; //investigate specular component
+    if (t < maxDist) {
+        vec3 n = calculateNormal(pos);
+        vec3 light = normalize(lightPos - pos);
+        vec3 view = normalize(ro - pos);
+        vec3 col = getCol(vec3(1.0, 0.0, 0.0), 0.3, 0.7, vec3(1.0, 0.0, 0.0), n, light, 32.0, view, 0.5);
+        return col;
+    }
+    return vec3(0.0);
 }
 
 void main()
@@ -66,11 +81,7 @@ void main()
     vec3 rd = normalize(vec3(uv, -1.0));
     float maxDist = 10.0;
 
-    vec3 col = vec3(0.0);
-    float t = rayMarch(ro, rd, maxDist);
-    if (t < maxDist) {
-        col = vec3(0.01, 0.0, 0.0) * getCol(10.0, 10.0, 1.0, 1.0, calculateNormal(ro + t * rd, vec3(0.0, 0.0, 0.0), 1.0), lightPos - (ro + t * rd), 1.0, vec3(1.0), 1.0);
-    }
+    vec3 col = rayMarch(ro, rd, maxDist);
 
     FragColor = vec4(col, 1.0);
 }
