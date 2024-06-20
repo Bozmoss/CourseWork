@@ -14,6 +14,10 @@ float aY = 0, aX = 0, lastX, lastY;
 bool firstMouse = true;
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
+        firstMouse = true;
+        return;
+    }
     if (firstMouse)
     {
         lastX = xpos;
