@@ -4,7 +4,7 @@
 
 out vec4 FragColor;
 uniform vec3 i_res;
-uniform float aY, aP, aR;
+uniform float aY, aX;
 vec3 lightPos = vec3(1.0, 1.0, 0.5);
 
 float sphereSDF(vec3 p, vec3 c, float r) {
@@ -15,6 +15,10 @@ float torusSDF(vec3 p, vec2 t) {
     vec2 q = vec2(length(p.xz)-t.x,p.y);
     return length(q)-t.y;
 }
+
+float planeSDF(vec3 p, vec4 n) {
+  return dot(p,n.xyz) + n.w;
+} 
 
 float unionSDF(float SDF1, float SDF2) {
     return min(SDF1, SDF2);
@@ -28,18 +32,22 @@ float subSDF(float SDF1, float SDF2) {
     return max(SDF1, -SDF2);
 }
 
-vec3 rotateSDF(vec3 p, float yaw, float pitch, float roll) {
+vec3 rotateSDF(vec3 p, float x, float y) {
     mat3 rot = mat3(
-        cos(pitch) * cos(roll), sin(yaw) * sin(pitch) * cos(roll) - cos(yaw) * sin(roll), cos(yaw) * sin(pitch) * cos(roll) + sin(yaw) * sin(roll),
-        cos(pitch) * sin(roll), sin(yaw) * sin(pitch) * sin(roll) + cos(yaw) * cos(roll), cos(yaw) * sin(pitch) * sin(roll) - sin(yaw) * cos(roll),
-        -sin(pitch), sin(yaw) * cos(pitch), cos(yaw) * cos(pitch)
+        cos(y), 0, sin(y),
+        sin(x) * sin(y), cos(x), -cos(y) * sin(x),
+        -cos(x) * sin(y), sin(x), cos(x) * cos(y)
     );
     p *= inverse(rot);
     return p;
 }
 
 float finalSDF(vec3 p) {
-    return torusSDF(rotateSDF(p, aY, aP, aR), vec2(0.5, 0.5));
+    //float s1 = sphereSDF(rotateSDF(p, aX, aY), vec3(0.0), 0.5);
+    //float s2 = sphereSDF(rotateSDF(p, aX, aY), vec3(1.0, 0.0, 0.0), 0.2);
+    float p1 = planeSDF(rotateSDF(p, aX, aY), vec4(0.0, 0.0, 1.0, 1.0));
+    float p2 = planeSDF(rotateSDF(p, aX, aY), vec4(1.0, 0.0, 0.0, -1.0));
+    return unionSDF(p1, p2);
 }
 
 vec3 calculateNormal(vec3 p) {
