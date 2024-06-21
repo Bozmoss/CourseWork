@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>    // Include GLFW header for creating windows and handling input
 #include <iostream>        // Include for standard I/O
 #include <vector>          // Include for using std::vector
+#include <chrono>
 
 #include "GLOBAL.hpp"      // Assuming this includes WINDOW_WIDTH and WINDOW_HEIGHT definitions
 #include "filehandler.hpp" // Assuming this includes necessary file handling functionality
@@ -43,7 +44,13 @@ void mouse(GLFWwindow* window, double xpos, double ypos) {
         aX = -89.0f;
 }
 
-int main() {
+void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwDestroyWindow(window);
+    }
+}
+
+int main(int argc, char** argv) {
     // Initialize GLFW
     int hres = glfwInit();
     if (hres != 1) {
@@ -52,8 +59,16 @@ int main() {
     }
 
     // Create a windowed mode window and its OpenGL context
-    auto window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "openGl", NULL, NULL);
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "OpenGL", glfwGetPrimaryMonitor(), NULL);
     glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, key);
     glfwSetCursorPosCallback(window, mouse);
 
     // Initialize GLEW
@@ -109,6 +124,9 @@ int main() {
     auto i_resLocation = glGetUniformLocation(p.handle(), "i_res");
     auto aYLocation = glGetUniformLocation(p.handle(), "aY");
     auto aXLocation = glGetUniformLocation(p.handle(), "aX");
+    auto timeLocation = glGetUniformLocation(p.handle(), "time");
+
+    auto startTime = std::chrono::high_resolution_clock::now();
 
     // Rendering loop
     while (!glfwWindowShouldClose(window)) {
@@ -120,6 +138,9 @@ int main() {
         glUniform3f(i_resLocation, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f);
         glUniform1f(aYLocation, aY);
         glUniform1f(aXLocation, aX);
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<float> elapsed = currentTime - startTime;
+        glUniform1f(timeLocation, elapsed.count());
 
         // Draw the triangle using the index buffer
         glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);
