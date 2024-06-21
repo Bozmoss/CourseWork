@@ -5,8 +5,8 @@
 out vec4 FragColor;
 uniform vec3 i_res;
 uniform float aY, aX;
-vec3 lights[2];
-vec3 lightCols[2];
+vec3 lights[3];
+vec3 lightCols[3];
 
 struct Material {
     vec3 color;
@@ -21,10 +21,12 @@ Material materials[2];
 void setup() {
     materials[0] = Material(vec3(1.0, 0.0, 0.0), 0.2, 0.7, 0.5, 32.0);
     materials[1] = Material(vec3(0.0, 1.0, 0.0), 0.2, 0.7, 0.5, 32.0);
-    lights[0] = vec3(1.0, 0.6, 1.0);
-    lights[1] = vec3(-1.0, 0.6, 1.0);
+    lights[0] = vec3(2.0, 0.6, 1.0);
+    lights[1] = vec3(-2.0, 0.6, 1.0);
+    lights[2] = vec3(0.0, 0.8, 1.0);
     lightCols[0] = vec3(1.0);
     lightCols[1] = vec3(1.0);
+    lightCols[2] = vec3(1.0);
 }
 
 struct SDF {
@@ -43,7 +45,7 @@ SDF torusSDF(vec3 p, vec2 t, int i) {
 
 SDF planeSDF(vec3 p, vec4 n, int i) {
   return SDF(dot(p,n.xyz) + n.w, i);
-} 
+}
 
 SDF unionSDF(SDF SDF1, SDF SDF2) {
     return (SDF1.dist < SDF2.dist) ? SDF1 : SDF2;
@@ -92,11 +94,11 @@ vec3 calculateNormal(vec3 p) {
 //Ia = intensity of scene (UI), Ka = intensity of material (UI) [Ambiant component]
 //Kd = diffuse intensity (UI), Ii = diffuse intensity of ith light (UI), n = normal vector at p, li = lightPos  - p [Diffuse component]
 //c = coefficent of specular reflection (UI), v = cameraPos - p, Ks = specular intensity (UI)
-vec3 getCol(vec3 Ia, Material m, vec3 Ii[2], vec3 n, vec3 li[2], vec3 v, vec3 p) {
+vec3 getCol(vec3 Ia, Material m, vec3 Ii[3], vec3 n, vec3 li[3], vec3 v, vec3 p) {
     vec3 a = Ia * m.Ka;
     vec3 d = vec3(0.0);
     vec3 s = vec3(0.0);
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
         vec3 light = normalize(li[i] - p);
         vec3 r = reflect(-light, n);
         d += max(dot(n, light), 0.0) * m.Kd * Ii[i] * m.color;
@@ -131,20 +133,9 @@ vec3 sortCol(vec3 ro, vec3 rd, float maxDist) {
         vec3 Ia = vec3(1.0);
         vec3 Ii = vec3(1.0);
         vec3 c1 = getCol(Ia, materials[int(t.y)], lightCols, n, lights, view, pos);
-        /*ro = pos;
-        rd = n;
-        vec2 t = rayMarch(ro, rd, maxDist);
-        vec3 pos = ro + t.x * rd;
-        if (t.x < maxDist && t.y >= 0) {
-            vec3 n = calculateNormal(pos);
-            vec3 view = normalize(ro - pos);
-            vec3 Ia = vec3(1.0);
-            vec3 Ii = vec3(1.0);
-            return vec3(t.x);
-        }*/
         return c1;
     }
-    return vec3(0.0);
+    return vec3(0.0, 0.0, 1.0);
 }
 
 void main()

@@ -2,20 +2,20 @@ Clone into Visual Studio then open the CourseWork.sln
 
 File contents:
 
-- Cube.h, Cube.cpp:
-  Class that renders a cube in a set position on the screen, default is (0, 0, 0), with a scalar (default 1) that affects the side length
+- Filehandler.hpp, Filehandler.cpp: Reads and writes to files
 
-- GLOBAL.h:
-  Stores the global variables used across multiple files
+- Fragment.glsl: OpenGL fragment shader
 
-- Main.cpp:
-  Main part of the code whcih runs the OpenGL environment
+- GLOBAL.hpp: Contains global variables
 
-- PVector.h, PVector.cpp:
-  Position vector class used for storing coordinate positions with vector methods, takes in an x, y, and z component with optional rgb components (default 1 1 1)
+- Indexbuffer.hpp, Indexbuffer.cpp: Sends vertex indicies to graphics the card via an OpenGL buffer
 
-- Shape.cpp, Shape.h:
-  Draws a 3D shape from a 2D array of PVectors, given the array's length and the length of the arrays in the 2D array, with optional coordinate offsets to accomodate for side normals
+- Main.cpp: Creats the GLFW and GLEW environment and handles mouse input
 
-- AffineMatrix.h, AffineMatrix.cpp:
-  Matrix class for scales, rotations, and translations
+- Program.hpp, Program.cpp: Attaches a shader to make an OpenGL program
+
+- Shader.hpp, Shader.cpp: Reads and compiles OpenGL shaders
+
+- Vertex.glsl: OpenGL vertex shader
+
+- Vertexbuffer.hpp, Vertexbuffer.cpp: Sends vertices to the graphics card via an OpenGl buffer
