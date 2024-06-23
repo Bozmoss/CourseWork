@@ -1,16 +1,18 @@
 //fragment shader
 
 #version 440 core
+#define lightsLen 100
+#define materialsLen 100
 
 out vec4 FragColor;
-uniform vec3 i_res;
-uniform float time;
-uniform float aY, aX;
-vec3 lights[3];
-vec3 lightCols[3];
+uniform vec3 res, lights[lightsLen], lightCols[lightsLen];
+uniform float time, aX, aY;
+uniform int, lightsL, materialsL;
 
 struct Material {
-    vec3 color;
+    float r;
+    float g;
+    float b;
     float Ka; //Coefficient of ambience
     float Kd; //Coefficient of diffuse
     float Ks; //Coefficenet of speculance
@@ -18,38 +20,26 @@ struct Material {
     float c; //Shininess
 };
 
-Material materials[3];
-
-void setup() {
-    materials[0] = Material(vec3(1.0, 0.0, 0.0), 0.2, 0.7, 0.5, 0.4, 32.0);
-    materials[1] = Material(vec3(0.0, 1.0, 0.0), 0.2, 0.7, 0.5, 0.0, 32.0);
-    materials[2] = Material(vec3(1.0), 0.2, 0.7, 0.5, 0.0, 16.0);
-    lights[0] = vec3(2.0, 0.6, 1.0);
-    lights[1] = vec3(-2.0, 0.6, 1.0);
-    lights[2] = vec3(0.0, 0.8, 1.0);
-    lightCols[0] = vec3(1.0);
-    lightCols[1] = vec3(1.0);
-    lightCols[2] = vec3(1.0);
-}
+layout(std140) uniform MaterialBlock {
+    Material materials[materialsLen];
+};
 
 struct SDF {
     float dist;
     int index;
-    bool hitFloor;
-    vec3 g;
 };
 
 SDF sphereSDF(vec3 p, vec3 c, float r, int i) {
-    return SDF(length(c-p) - r, i, false, vec3(0.0));
+    return SDF(length(c-p) - r, i);
 }
 
 SDF torusSDF(vec3 p, vec2 t, int i) {
     vec2 q = vec2(length(p.xz)-t.x,p.y);
-    return SDF(length(q)-t.y, i, false, vec3(0.0));
+    return SDF(length(q)-t.y, i);
 }
 
 SDF planeSDF(vec3 p, vec3 n, float h, int i) {
-  return SDF(dot(p, n) + h, i, false, vec3(0.0));
+  return SDF(dot(p, n) + h, i);
 }
 
 SDF unionSDF(SDF SDF1, SDF SDF2) {
@@ -94,21 +84,6 @@ vec3 translateSDF(vec3 p, vec3 t) {
     return p - t;
 }
 
-void gravity(vec3 p, SDF sdf) {
-    float g = -time/8;
-    if (p.y > -2.0 && !sdf.hitFloor) {
-        if (length(sdf.g) != 0) {
-            sdf.g *= vec3(0, g, 0);
-        }
-        else {
-            sdf.g = vec3(0, g, 0);
-        }
-    }
-    else {
-        sdf.hitFloor = true;
-    }
-}
-
 SDF finalSDF(vec3 p) {
     SDF s1 = sphereSDF(p, vec3(0.0), 0.5, 0);
     SDF s2 = sphereSDF(rotateSDF(p, aX, aY), vec3(0.9, 0.0, 0.0), 0.2, 1);
@@ -144,16 +119,16 @@ bool isInShadow(vec3 p, vec3 rd, float dist) {
     return false;
 }
 
-vec3 getCol(vec3 Ia, Material m, vec3 Ii[3], vec3 n, vec3 li[3], vec3 v, vec3 p) {
+vec3 getCol(vec3 Ia, Material m, vec3 Ii[lightsLen], vec3 n, vec3 li[lightsLen], vec3 v, vec3 p) {
     vec3 a = Ia * m.Ka;
     vec3 d = vec3(0.0);
     vec3 s = vec3(0.0);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < lightsL; i++) {
         vec3 light = normalize(li[i] - p);
         float dist = length(light);
         if (!isInShadow(p, light, dist)) {
             vec3 r = reflect(-light, n);
-            d += max(dot(n, light), 0.0) * m.Kd * Ii[i] * m.color;
+            d += max(dot(n, light), 0.0) * m.Kd * Ii[i] * vec3(m.r, m.g, m.b);
             s += m.Ks * pow(max(dot(r, normalize(v)), 0.0), m.c) * Ii[i];
         }
     }
@@ -212,14 +187,14 @@ vec3 sortCol(vec3 ro, vec3 rd, float maxDist) {
         }
     }
     return c;
+    //return vec3(materials[2].r, materials[2].g, materials[2].b);
 }
 
 void main()
 {
-    setup();
-    vec2 uv = gl_FragCoord.xy / i_res.xy;
+    vec2 uv = gl_FragCoord.xy / res.xy;
     uv = uv * 2.0 - 1.0;
-    uv.x *= i_res.x / i_res.y;
+    uv.x *= res.x / res.y;
 
     vec3 ro = vec3(0.0, 0.0, 2.0);
     vec3 rd = normalize(vec3(uv, -1.0));

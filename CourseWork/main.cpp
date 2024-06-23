@@ -10,8 +10,10 @@
 #include "program.hpp"     // Assuming this includes Program class definition
 #include "vertexbuffer.hpp"// Assuming this includes VertexBuffer class definition
 #include "indexbuffer.hpp" // Assuming this includes IndexBuffer class definition
+#include "fragvars.hpp"
+#include "material.hpp"
 
-float aY = 0, aX = 0, lastX, lastY;
+float aX = 0, aY = 0, lastX, lastY;
 bool firstMouse = true;
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
@@ -35,8 +37,8 @@ void mouse(GLFWwindow* window, double xpos, double ypos) {
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
-    aY += xoffset;
     aX -= yoffset;
+    aY += xoffset;
 
     if (aX > 89.0f)
         aX = 89.0f;
@@ -94,6 +96,25 @@ int main(int argc, char** argv) {
     p.attachShader(fragmentShader);
     p.activate();
 
+    std::vector<float> res = { WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f };
+    std::vector<std::vector<float>> lights = {
+        {2.0, 0.6, 1.0},
+        {-2.0, 0.6, 1.0},
+        {0.0, 0.8, 1.0}
+    };
+    std::vector<std::vector<float>> lightCols = {
+        {1.0, 1.0, 1.0},
+        {1.0, 1.0, 1.0},
+        {1.0, 1.0, 1.0}
+    };
+
+    std::vector<Material> materials = {
+        {1.0f, 0.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.4f, 32.0f},
+        {0.0f, 1.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.0f, 32.0f},
+        {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.0f, 16.0f}
+    };
+    FragVars fvs(res, aX, aY, lights, lightCols, materials);
+
     // Define vertex data for a triangle
     std::vector<GLfloat> verts = {
         -1.0f, -1.0f, // Bottom-left
@@ -121,10 +142,7 @@ int main(int argc, char** argv) {
     glBindBuffer(GL_ARRAY_BUFFER, vB.handle());
     glVertexAttribPointer(vertexPosition, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-    auto i_resLocation = glGetUniformLocation(p.handle(), "i_res");
-    auto aYLocation = glGetUniformLocation(p.handle(), "aY");
-    auto aXLocation = glGetUniformLocation(p.handle(), "aX");
-    auto timeLocation = glGetUniformLocation(p.handle(), "time");
+    fvs.init(p);
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -135,12 +153,7 @@ int main(int argc, char** argv) {
 
         p.activate();
 
-        glUniform3f(i_resLocation, WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f);
-        glUniform1f(aYLocation, aY);
-        glUniform1f(aXLocation, aX);
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> elapsed = currentTime - startTime;
-        glUniform1f(timeLocation, elapsed.count());
+        fvs.update(aX, aY);
 
         // Draw the triangle using the index buffer
         glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);

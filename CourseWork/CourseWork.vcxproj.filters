@@ -50,6 +50,9 @@
     <ClInclude Include="GLOBAL.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fragvars.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="filehandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
