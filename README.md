@@ -1,21 +1,3 @@
-Clone into Visual Studio then open the CourseWork.sln
+#OpenGL Real-TIme Raytracing
 
-File contents:
-
-- Filehandler.hpp, Filehandler.cpp: Reads and writes to files
-
-- Fragment.glsl: OpenGL fragment shader
-
-- GLOBAL.hpp: Contains global variables
-
-- Indexbuffer.hpp, Indexbuffer.cpp: Sends vertex indicies to graphics the card via an OpenGL buffer
-
-- Main.cpp: Creats the GLFW and GLEW environment and handles mouse input
-
-- Program.hpp, Program.cpp: Attaches a shader to make an OpenGL program
-
-- Shader.hpp, Shader.cpp: Reads and compiles OpenGL shaders
-
-- Vertex.glsl: OpenGL vertex shader
-
-- Vertexbuffer.hpp, Vertexbuffer.cpp: Sends vertices to the graphics card via an OpenGl buffer
+For my project, I am going to make a 3D raytracing engine, taking some inspiration from how blender deals with their rendering. When this project is completed, I want to have a 3D simulated environment in which objects can be added and different material properties of the object can be changed in real time, with some physics as well.
