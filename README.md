@@ -17,3 +17,6 @@ For this method I did some research on how to set up the OpenGL (Open Graphics L
 ### Application
 
 My first thought for going about this would be to use an approach which would simplify a 3D shape into many triangles, which would have 3 vertices, and could be rendered and dynamically altered by joining up the vertices of the triangles. This would be achievable by representing each vertex as a position vector in 3D space, then applying a perspective projection to it, as shown in Fig. 1.
+![perspecive projection](https://github.com/Bozmoss/CourseWork/blob/master/README-resources/perspectiveProjection.png?raw=true)Fig. 1
+
+Going about calculating this is surprisingly simple. Let a point A in 3D space be defined as the coordinate ![equation](https://latex.codecogs.com/svg.image?(x,y,z))
