@@ -47,10 +47,7 @@ SDF unionSDF(SDF SDF1, SDF SDF2) {
 }
 
 SDF intersectSDF(SDF SDF1, SDF SDF2) {
-    if (SDF1.dist > SDF2.dist) {
-        return SDF1;
-    }
-    return SDF2;
+    return (SDF1.dist > SDF2.dist) ? SDF1 : SDF2;
 }
 
 SDF subSDF(SDF SDF1, SDF SDF2) {
