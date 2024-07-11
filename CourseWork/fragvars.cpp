@@ -1,16 +1,18 @@
 #include "fragvars.hpp"
 
-FragVars::FragVars(std::vector<float> &res, float &aX, float &aY, std::vector<std::vector<float>> &lights, std::vector<std::vector<float>> &lightCols, std::vector<Material> &materials) {
+FragVars::FragVars(std::vector<float> &res, float &aX, float &aY, std::vector<std::vector<float>> &lights, std::vector<std::vector<float>> &lightCols, std::vector<Material> &materials, std::vector<Object> &objects) {
     this->res = res;
     this->aX = aX;
     this->aY = aY;
     this->lights = lights;
     this->lightCols = lightCols;
     this->materials = materials;
+    this->objects = objects;
 }
 
 void FragVars::init(Program &p) {
-    ub.fill(materials, p);
+    ubMat.fill(materials, p, "MaterialBlock");
+    ubObj.fill(objects, p, "ObjectBlock");
     resLocation = glGetUniformLocation(p.handle(), "res");
     aYLocation = glGetUniformLocation(p.handle(), "aY");
     aXLocation = glGetUniformLocation(p.handle(), "aX");
@@ -19,6 +21,7 @@ void FragVars::init(Program &p) {
     lightColsLocation = glGetUniformLocation(p.handle(), "lightCols");
     lightsLLocation = glGetUniformLocation(p.handle(), "lightsL");
     materialsLLocation = glGetUniformLocation(p.handle(), "materialsL");
+    objectsLLocation = glGetUniformLocation(p.handle(), "objectsL");
     time = std::chrono::high_resolution_clock::now();
 }
 void FragVars::update(float &aX, float &aY) {
@@ -29,6 +32,7 @@ void FragVars::update(float &aX, float &aY) {
     glUniform1f(aYLocation, this->aY);
     glUniform1i(lightsLLocation, lights.size());
     glUniform1i(materialsLLocation, materials.size());
+    glUniform1i(objectsLLocation, objects.size());
     auto currentTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> elapsed = currentTime - time;
     glUniform1f(timeLocation, elapsed.count());

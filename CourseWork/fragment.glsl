@@ -3,11 +3,12 @@
 #version 440 core
 #define lightsLen 100
 #define materialsLen 100
+#define objectsLen 100
 
 out vec4 FragColor;
 uniform vec3 res, lights[lightsLen], lightCols[lightsLen];
 uniform float time, aX, aY;
-uniform int, lightsL, materialsL;
+uniform int lightsL, materialsL, objectsL;
 
 struct Material {
     float r;
@@ -24,21 +25,34 @@ layout(std140) uniform MaterialBlock {
     Material materials[materialsLen];
 };
 
+struct Object {
+    int type;
+    int material;
+    float x;
+    float y;
+    float z;
+    float l1;
+};
+
+layout(std140) uniform ObjectBlock {
+    Object objects[objectsLen];
+};
+
 struct SDF {
     float dist;
     int index;
 };
 
-SDF sphereSDF(vec3 p, vec3 c, float r, int i) {
+SDF sphereSDF(vec3 p, vec3 c, float r, int i) { //0
     return SDF(length(c-p) - r, i);
 }
 
-SDF torusSDF(vec3 p, vec2 t, int i) {
+SDF torusSDF(vec3 p, vec2 t, int i) { //1
     vec2 q = vec2(length(p.xz)-t.x,p.y);
     return SDF(length(q)-t.y, i);
 }
 
-SDF planeSDF(vec3 p, vec3 n, float h, int i) {
+SDF planeSDF(vec3 p, vec3 n, float h, int i) { //2
   return SDF(dot(p, n) + h, i);
 }
 
@@ -82,12 +96,23 @@ vec3 translateSDF(vec3 p, vec3 t) {
 }
 
 SDF finalSDF(vec3 p) {
-    SDF s1 = sphereSDF(p, vec3(0.0), 0.5, 0);
-    SDF s2 = sphereSDF(rotateSDF(p, aX, aY), vec3(0.9, 0.0, 0.0), 0.2, 1);
-    SDF fl = planeSDF(p, vec3(0.0, 1.0, 0.0), 1.5, 2);
-    //SDF t = torusSDF(rotateSDF(p, aX, aY, 0.0), vec2(0.3, 0.3), 0);
-    return unionSDF(unionSDF(s1, s2), fl);
-    //return unionSDF(fl, s1);
+    SDF final = planeSDF(p, vec3(0.0, 1.0, 0.0), 1.5, 2);
+    for (int i = 0; i < objectsL; i++) {
+        SDF temp;
+        switch(objects[i].type) {
+            case 0:
+                temp = sphereSDF(rotateSDF(p, aX, aY), vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, objects[i].material);
+                break;
+            case 1:
+                temp = torusSDF(rotateSDF(p, aX, aY, 0), vec2(objects[i].x, objects[i].y), objects[i].material);
+                break;
+            case 2:
+                temp = planeSDF(p, vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, objects[i].material);
+                break;
+        };
+        final = unionSDF(final, temp);
+    }
+    return final;
 }
 
 vec3 calculateNormal(vec3 p) {

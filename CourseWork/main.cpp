@@ -113,7 +113,12 @@ int main(int argc, char** argv) {
         {0.0f, 1.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.0f, 32.0f},
         {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.0f, 16.0f}
     };
-    FragVars fvs(res, aX, aY, lights, lightCols, materials);
+
+    std::vector<Object> objects = {
+        {0, 0, 0.0, 0.0, 0.0, 1.0},
+        {0, 1, 0.9, 0.0, 0.0, 0.2}
+    };
+    FragVars fvs(res, aX, aY, lights, lightCols, materials, objects);
 
     // Define vertex data for a triangle
     std::vector<GLfloat> verts = {

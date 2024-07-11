@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "material.hpp"
+#include "object.hpp"
 #include "program.hpp"
 #include "uniformbuffer.hpp"
 
@@ -14,15 +15,13 @@ private:
     float aX, aY;
     std::vector<std::vector<float>> lights, lightCols;
     std::vector<Material> materials;
+    std::vector<Object> objects;
     std::chrono::steady_clock::time_point time;
-    GLint resLocation, aYLocation, aXLocation, timeLocation, lightsLocation, lightColsLocation, materialsLocation, lightsLLocation, materialsLLocation;
-    UniformBuffer ub;
+    GLint resLocation, aYLocation, aXLocation, timeLocation, lightsLocation, lightColsLocation, materialsLocation, objectsLocation, lightsLLocation, materialsLLocation, objectsLLocation;
+    UniformBuffer<Material> ubMat;
+    UniformBuffer<Object> ubObj;
 public:
-    FragVars(std::vector<float> &res, float &aX, float &aY, std::vector<std::vector<float>> &lights, std::vector<std::vector<float>> &lightCols, std::vector<Material> &materials);
-
-    FragVars(const FragVars& other) = delete;
-
-    FragVars operator=(const FragVars& other) = delete;
+    FragVars(std::vector<float>& res, float& aX, float& aY, std::vector<std::vector<float>>& lights, std::vector<std::vector<float>>& lightCols, std::vector<Material>& materials, std::vector<Object>& objects);
 
     void init(Program &p);
     void update(float &aX, float  &aY);

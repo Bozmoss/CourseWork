@@ -133,6 +133,7 @@
     <ClCompile Include="indexbuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="material.cpp" />
+    <ClCompile Include="object.cpp" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="program.hpp" />
     <ClCompile Include="shader.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="GLOBAL.hpp" />
     <ClInclude Include="indexbuffer.hpp" />
     <ClInclude Include="material.hpp" />
+    <ClInclude Include="object.hpp" />
     <ClInclude Include="shader.hpp" />
     <ClInclude Include="uniformbuffer.hpp" />
     <ClInclude Include="vertexbuffer.hpp" />
