@@ -132,10 +132,8 @@
     <ClCompile Include="fragvars.cpp" />
     <ClCompile Include="indexbuffer.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="material.cpp" />
-    <ClCompile Include="object.cpp" />
     <ClCompile Include="program.cpp" />
-    <ClCompile Include="program.hpp" />
+    <ClCompile Include="programH.hpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="uniformbuffer.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />

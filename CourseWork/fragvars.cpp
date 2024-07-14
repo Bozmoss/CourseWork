@@ -11,8 +11,8 @@ FragVars::FragVars(std::vector<float> &res, float &aX, float &aY, std::vector<st
 }
 
 void FragVars::init(Program &p) {
-    ubMat.fill(materials, p, "MaterialBlock");
-    ubObj.fill(objects, p, "ObjectBlock");
+    ubMat.fill<Material>(materials, p, "MaterialBlock");
+    ubObj.fill<Object>(objects, p, "ObjectBlock");
     resLocation = glGetUniformLocation(p.handle(), "res");
     aYLocation = glGetUniformLocation(p.handle(), "aY");
     aXLocation = glGetUniformLocation(p.handle(), "aX");

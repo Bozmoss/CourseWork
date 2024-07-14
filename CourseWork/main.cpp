@@ -7,7 +7,7 @@
 #include "GLOBAL.hpp"      // Assuming this includes WINDOW_WIDTH and WINDOW_HEIGHT definitions
 #include "filehandler.hpp" // Assuming this includes necessary file handling functionality
 #include "shader.hpp"      // Assuming this includes Shader class definition
-#include "program.hpp"     // Assuming this includes Program class definition
+#include "programH.hpp"     // Assuming this includes Program class definition
 #include "vertexbuffer.hpp"// Assuming this includes VertexBuffer class definition
 #include "indexbuffer.hpp" // Assuming this includes IndexBuffer class definition
 #include "fragvars.hpp"

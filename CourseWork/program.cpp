@@ -1,4 +1,4 @@
-#include "program.hpp"
+#include "programH.hpp"
 #include <iostream>
 
 // Constructor: Initializes the shader program object
