@@ -18,8 +18,7 @@ private:
     std::vector<Object> objects;
     std::chrono::steady_clock::time_point time;
     GLint resLocation, aYLocation, aXLocation, timeLocation, lightsLocation, lightColsLocation, materialsLocation, objectsLocation, lightsLLocation, materialsLLocation, objectsLLocation;
-    UniformBuffer ubMat;
-    UniformBuffer ubObj;
+    UniformBuffer ub;
 public:
     FragVars(std::vector<float>& res, float& aX, float& aY, std::vector<std::vector<float>>& lights, std::vector<std::vector<float>>& lightCols, std::vector<Material>& materials, std::vector<Object>& objects);
 

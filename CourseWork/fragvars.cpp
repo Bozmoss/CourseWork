@@ -11,8 +11,40 @@ FragVars::FragVars(std::vector<float> &res, float &aX, float &aY, std::vector<st
 }
 
 void FragVars::init(Program &p) {
-    ubMat.fill<Material>(materials, p, "MaterialBlock");
-    ubObj.fill<Object>(objects, p, "ObjectBlock");
+    std::vector<float> result;
+    for (int i = 0; i < 100; i++) {
+        if (i < materials.size()) {
+            result.push_back(materials.at(i).r);
+            result.push_back(materials.at(i).g);
+            result.push_back(materials.at(i).b);
+            result.push_back(materials.at(i).Ka);
+            result.push_back(materials.at(i).Kd);
+            result.push_back(materials.at(i).Ks);
+            result.push_back(materials.at(i).Kr);
+            result.push_back(materials.at(i).c);
+        }
+        else {
+            for (int j = 0; j < 8; j++) {
+                result.push_back(0.0);
+            }
+        }
+    }
+    for (int i = 0; i < 100; i++) {
+        if (i < objects.size()) {
+            result.push_back(objects.at(i).type);
+            result.push_back(objects.at(i).material);
+            result.push_back(objects.at(i).x);
+            result.push_back(objects.at(i).y);
+            result.push_back(objects.at(i).z);
+            result.push_back(objects.at(i).l1);
+        }
+        else {
+            for (int j = 0; j < 6; j++) {
+                result.push_back(0.0);
+            }
+        }
+    }
+    ub.fill(result, p, "bindPoint");
     resLocation = glGetUniformLocation(p.handle(), "res");
     aYLocation = glGetUniformLocation(p.handle(), "aY");
     aXLocation = glGetUniformLocation(p.handle(), "aX");

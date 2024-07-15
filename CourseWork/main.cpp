@@ -115,8 +115,8 @@ int main(int argc, char** argv) {
     };
 
     std::vector<Object> objects = {
-        {0, 0, 0.0, 0.0, 0.0, 1.0},
-        {0, 1, 0.9, 0.0, 0.0, 0.2}
+        {0, 1, 0.9, 0.0, 0.0, 0.2},
+        {0, 0, 0.0, 0.0, 0.0, 0.8},
     };
     FragVars fvs(res, aX, aY, lights, lightCols, materials, objects);
 

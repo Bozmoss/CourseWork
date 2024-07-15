@@ -21,20 +21,17 @@ struct Material {
     float c; //Shininess
 };
 
-layout(std140) uniform MaterialBlock {
-    Material materials[materialsLen];
-};
-
 struct Object {
-    int type;
-    int material;
+    float type;
+    float material;
     float x;
     float y;
     float z;
     float l1;
 };
 
-layout(std140) uniform ObjectBlock {
+layout(std140) uniform bindPoint {
+    Material materials[materialsLen];
     Object objects[objectsLen];
 };
 
@@ -99,15 +96,15 @@ SDF finalSDF(vec3 p) {
     SDF final = planeSDF(p, vec3(0.0, 1.0, 0.0), 1.5, 2);
     for (int i = 0; i < objectsL; i++) {
         SDF temp;
-        switch(objects[i].type) {
+        switch(int(objects[i].type)) {
             case 0:
-                temp = sphereSDF(rotateSDF(p, aX, aY), vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, objects[i].material);
+                temp = sphereSDF(rotateSDF(p, aX, aY), vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, int(objects[i].material));
                 break;
             case 1:
-                temp = torusSDF(rotateSDF(p, aX, aY, 0), vec2(objects[i].x, objects[i].y), objects[i].material);
+                temp = torusSDF(rotateSDF(p, aX, aY, 0), vec2(objects[i].x, objects[i].y), int(objects[i].material));
                 break;
             case 2:
-                temp = planeSDF(p, vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, objects[i].material);
+                temp = planeSDF(p, vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, int(objects[i].material));
                 break;
         };
         final = unionSDF(final, temp);
