@@ -13,14 +13,36 @@
 #include "fragvars.hpp"
 #include "material.hpp"
 
-float aX = 0, aY = 0, lastX, lastY;
+#define PI 3.14159265359
+
+float aX = 0, aY = 0, lastX, lastY, g = 0.00003, r = 0.8;
 bool firstMouse = true;
+std::vector<Material> materials;
+std::vector<Object> objects;
+
+struct Point {
+    float x;
+    float y;
+};
+
+Point screenToNDC(float x, float y) {
+    Point ndc;
+    ndc.x = 2.0f * x / WINDOW_WIDTH - 1.0f;
+    ndc.y = 1.0f - 2.0f * y / WINDOW_HEIGHT;
+    return ndc;
+}
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
+        for (Object& o : objects) {
+            if (o.moving) {
+                o.moving = false;
+            }
+        }
         firstMouse = true;
         return;
     }
+
     if (firstMouse)
     {
         lastX = xpos;
@@ -28,27 +50,67 @@ void mouse(GLFWwindow* window, double xpos, double ypos) {
         firstMouse = false;
     }
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
-    lastX = xpos;
-    lastY = ypos;
-
     float sensitivity = 0.01f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
 
-    aX -= yoffset;
-    aY += xoffset;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
+        lastX = xpos;
+        lastY = ypos;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
 
-    if (aX > 89.0f)
-        aX = 89.0f;
-    if (aX < -89.0f)
-        aX = -89.0f;
+        aX += yoffset;
+        aY -= xoffset;
+
+        if (aX > PI / 4)
+            aX = PI / 4;
+        if (aX < -PI / 2)
+            aX = -PI / 2;
+    }
+    else {
+        Point pos = screenToNDC(xpos, ypos), last = screenToNDC(lastX, lastY);
+        float xoffset = pos.x - last.x, yoffset = pos.y - last.y;
+        xoffset *= sensitivity, yoffset *= sensitivity;
+        /*for (Object& o : objects) {
+            if (condition) {
+                o.x += xoffset;
+                o.y += yoffset;
+                o.moving = true;
+            }
+        }*/
+    }
 }
 
 void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwDestroyWindow(window);
+    }
+}
+
+void gravity() {
+    for (Object& o : objects) {
+        if (!o.moving) {
+            if (o.down) {
+                o.dy -= g;
+                o.y += o.dy;
+                if (o.y - o.l1 < -1.5) {
+                    o.y = -1.5 + o.l1;
+                    o.dy = -o.dy * r;
+                    if (abs(o.dy) < 0.000001) {
+                        o.dy = 0.0;
+                        o.down = false;
+                    }
+                }
+            }
+            else {
+                o.dy -= g;
+                o.y += o.dy;
+                if (o.dy <= 0) {
+                    o.down = true;
+                }
+            }
+        }
     }
 }
 
@@ -109,15 +171,15 @@ int main(int argc, char** argv) {
         {1.0, 1.0, 1.0}
     };
 
-    std::vector<Material> materials = {
+    materials = {
         {1.0f, 0.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.4f, 32.0f},
         {0.0f, 1.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.0f, 32.0f},
         {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.0f, 16.0f}
     };
 
-    std::vector<Object> objects = {
-        {0, 1, 0.9, 0.0, 0.0, 0.2}, // {SDFtype, material, x, y, z, lengthVariable}
-        {0, 0, 0.0, 0.0, 0.0, 0.5},
+    objects = {
+        {0, 0, -0.8, 0.0, 0.0, 0.5}, // {SDFtype, material, x, y, z, lengthVariable}
+        {0, 1, 0.8, 0.0, 0.0, 0.3}
     };
     FragVars fvs(res, aX, aY, lights, lightCols, materials, objects);
 
@@ -159,7 +221,9 @@ int main(int argc, char** argv) {
 
         p.activate();
 
-        fvs.update(aX, aY);
+        gravity();
+
+        fvs.update(p, aX, aY, materials, objects);
 
         // Draw the triangle using the index buffer
         glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);

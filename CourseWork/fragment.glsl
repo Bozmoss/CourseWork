@@ -68,24 +68,26 @@ SDF subSDF(SDF SDF1, SDF SDF2) {
     return SDF2;
 }
 
-vec3 rotateSDF(vec3 p, float x, float y) {
-    mat3 rot = mat3(
-        cos(y), 0, sin(y),
-        sin(x) * sin(y), cos(x), -cos(y) * sin(x),
-        -cos(x) * sin(y), sin(x), cos(x) * cos(y)
-    );
-    p *= inverse(rot);
-    return p;
+mat3 rotateX(float a) {
+    float s = sin(a), c = cos(a);
+    return mat3(
+    1.0, 0.0, 0.0,
+    0.0, c, -s,
+    0.0, s, c);
 }
 
-vec3 rotateSDF(vec3 p, float x, float y, float z) {
-    mat3 rot = mat3(
-        cos(y) * cos(z), sin(x) * sin(y) * cos(z) - cos(x) * sin(z), cos(x) * sin(y) * cos(z) + sin(x) * sin(z),
-        cos(y) * sin(z), sin(x) * sin(y) * sin(z) + cos(x) * cos(z), cos(x) * sin(y) * sin(z) - sin(x) * cos(z),
-        -sin(y), sin(x) * cos(y), cos(x) * cos(y)
-    );
-    p *= inverse(rot);
-    return p;
+mat3 rotateY(float a) {
+    float s = sin(a), c = cos(a);
+    return mat3(
+    c, 0.0, s,
+    0.0, 1.0, 0.0,
+    -s, 0.0, c);
+}
+
+vec3 rotateSDF(vec3 p, float x, float y) {
+    mat3 rotX = rotateX(x);
+    mat3 rotY = rotateY(y);
+    return p * rotY * rotX;
 }
 
 vec3 translateSDF(vec3 p, vec3 t) {
@@ -98,10 +100,10 @@ SDF finalSDF(vec3 p) {
         SDF temp;
         switch(int(objects[i].type)) {
             case 0:
-                temp = sphereSDF(rotateSDF(p, aX, aY), vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, int(objects[i].material));
+                temp = sphereSDF(p, vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, int(objects[i].material));
                 break;
             case 1:
-                temp = torusSDF(rotateSDF(p, aX, aY, 0), vec2(objects[i].x, objects[i].y), int(objects[i].material));
+                temp = torusSDF(p, vec2(objects[i].x, objects[i].y), int(objects[i].material));
                 break;
             case 2:
                 temp = planeSDF(p, vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1, int(objects[i].material));
@@ -216,6 +218,11 @@ void main()
 
     vec3 ro = vec3(0.0, 0.0, 2.0);
     vec3 rd = normalize(vec3(uv, -1.0));
+    mat3 rotX = rotateX(aX);
+    mat3 rotY = rotateY(aY);
+    ro = ro * rotX * rotY;
+    rd = rd * rotX * rotY;
+
     float maxDist = 10.0;
 
     vec3 col = sortCol(ro, rd, maxDist);
