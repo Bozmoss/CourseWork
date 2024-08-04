@@ -85,7 +85,8 @@ int main(int argc, char** argv) {
     if (vertexShader.inError()) {
         std::cout << vertexShader.error() << "\n";
     }
-    Shader fragmentShader(Shader::Type::FRAGMENT, "./fragment.glsl");
+    Shader fragmentShader(Shader::Type::FRAGMENT, "./fragment.glsl"); // Main run mode
+    //Shader fragmentShader(Shader::Type::FRAGMENT, "./debugFrag.glsl");  // Debug run mode
     if (fragmentShader.inError()) {
         std::cout << fragmentShader.error() << "\n";
     }
@@ -115,8 +116,8 @@ int main(int argc, char** argv) {
     };
 
     std::vector<Object> objects = {
-        {0, 1, 0.9, 0.0, 0.0, 0.2},
-        {0, 0, 0.0, 0.0, 0.0, 0.8},
+        {0, 1, 0.9, 0.0, 0.0, 0.2}, // {SDFtype, material, x, y, z, lengthVariable}
+        {0, 0, 0.0, 0.0, 0.0, 0.5},
     };
     FragVars fvs(res, aX, aY, lights, lightCols, materials, objects);
 

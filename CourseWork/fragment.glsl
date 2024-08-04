@@ -206,7 +206,6 @@ vec3 sortCol(vec3 ro, vec3 rd, float maxDist) {
         }
     }
     return c;
-    //return vec3(materials[2].r, materials[2].g, materials[2].b);
 }
 
 void main()

@@ -37,14 +37,18 @@ void FragVars::init(Program &p) {
             result.push_back(objects.at(i).y);
             result.push_back(objects.at(i).z);
             result.push_back(objects.at(i).l1);
+            // Add padding to ensure each Object struct is 32 bytes in std140 layout
+            result.push_back(0.0f); // Padding to align the next Object
+            result.push_back(0.0f); // Padding to align the next Object
         }
         else {
-            for (int j = 0; j < 6; j++) {
-                result.push_back(0.0);
+            for (int j = 0; j < 8; j++) {
+                result.push_back(0.0f);
             }
         }
     }
     ub.fill(result, p, "bindPoint");
+
     resLocation = glGetUniformLocation(p.handle(), "res");
     aYLocation = glGetUniformLocation(p.handle(), "aY");
     aXLocation = glGetUniformLocation(p.handle(), "aX");
