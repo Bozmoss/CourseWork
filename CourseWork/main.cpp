@@ -15,7 +15,7 @@
 
 #define PI 3.14159265359
 
-float aX = 0, aY = 0, lastX, lastY, g = 0.00003, r = 0.8;
+float aX = 0, aY = 0, lastX, lastY, g = 0.00003, r = 0.8, f = 0.7;
 bool firstMouse = true;
 std::vector<Material> materials;
 std::vector<Object> objects;
@@ -30,6 +30,20 @@ Point screenToNDC(float x, float y) {
     ndc.x = 2.0f * x / WINDOW_WIDTH - 1.0f;
     ndc.y = 1.0f - 2.0f * y / WINDOW_HEIGHT;
     return ndc;
+}
+
+float sphereSDF(float px, float py, float pz, float cx, float cy, float cz, float r) {
+    return sqrt(
+        (cx - px) * (cx - px) +
+        (cy - py) * (cy - py) +
+        (cz - pz) * (cz - pz)
+    ) - r;
+}
+
+float torusSDF(float px, float py, float pz, float tx, float ty, int i) {
+    float q[2] = { sqrt(px * px + pz * pz) - tx, py };
+    return sqrt(q[0] * q[0] + q[1] * q[1]) - ty;
+
 }
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
@@ -71,14 +85,59 @@ void mouse(GLFWwindow* window, double xpos, double ypos) {
     else {
         Point pos = screenToNDC(xpos, ypos), last = screenToNDC(lastX, lastY);
         float xoffset = pos.x - last.x, yoffset = pos.y - last.y;
-        xoffset *= sensitivity, yoffset *= sensitivity;
-        /*for (Object& o : objects) {
-            if (condition) {
-                o.x += xoffset;
-                o.y += yoffset;
-                o.moving = true;
+        xoffset *= sensitivity*100, yoffset *= sensitivity*100;
+        if (abs(xoffset) < 0.001 && abs(yoffset) < 0.001) {
+            xoffset = 0;
+            yoffset = 0;
+        }
+        float finalT = 11.0;
+        int finalIndex = -1;
+        for (int i = 0; i < objects.size(); i++) {
+            float t = 0.0;
+            const float maxT = 10.0;
+            while (t < maxT) {
+                float p[3] = {
+                    t * pos.x,
+                    t * pos.y,
+                    t * objects[i].z
+                };
+                float res = 0;
+                switch (objects.at(i).type) {
+                case 0:
+                    res = sphereSDF(p[0], p[1], p[2], objects.at(i).x, objects.at(i).y ,objects.at(i).z, objects.at(i).l1);
+                    break;
+                case 1:
+                    break; //TODO: ADD TORUS CAPABILITIES
+                }
+                if (res < 0.0001) {
+                    break;
+                }
+                t += res;
             }
-        }*/
+            if (t < finalT && t < maxT) {
+                finalT = t;
+                finalIndex = i;
+            }
+        }
+        if (finalIndex != -1) {
+            objects[finalIndex].moving = true;
+            objects[finalIndex].dx = xoffset;
+            objects[finalIndex].dy = yoffset;
+        }
+        for (Object& o : objects) {
+            if (o.moving) {
+                if (xoffset != 0 || yoffset != 0) {
+                    o.dx = xoffset;
+                    o.dy = yoffset;
+                }
+                else {
+                    o.dx = 0;
+                    o.dy = 0;
+                }
+            }
+        }
+        lastX = xpos;
+        lastY = ypos;
     }
 }
 
@@ -93,7 +152,7 @@ void gravity() {
         if (!o.moving) {
             if (o.down) {
                 o.dy -= g;
-                o.y += o.dy;
+                //o.y += o.dy;
                 if (o.y - o.l1 < -1.5) {
                     o.y = -1.5 + o.l1;
                     o.dy = -o.dy * r;
@@ -105,12 +164,23 @@ void gravity() {
             }
             else {
                 o.dy -= g;
-                o.y += o.dy;
+                //o.y += o.dy;
                 if (o.dy <= 0) {
                     o.down = true;
                 }
             }
         }
+    }
+}
+
+void updateObjects() {
+    for (Object& o : objects) {
+        if (o.y - o.l1 <= -1.5 && !o.moving) {
+            o.dx *= f;
+        }
+        o.x += o.dx;
+        o.y += o.dy;
+        o.z += o.dz;
     }
 }
 
@@ -222,6 +292,8 @@ int main(int argc, char** argv) {
         p.activate();
 
         gravity();
+
+        updateObjects();
 
         fvs.update(p, aX, aY, materials, objects);
 
