@@ -1,16 +1,15 @@
 #pragma once
 
-#include <GL/glew.h>       // Include GLEW header for OpenGL types and functions
-#include <vector>          // Include vector for handling dynamic arrays
+#include <GL/glew.h> // OpenGL Extension Wrangler library
+#include <vector>    // Vector data structure library
 
 class IndexBuffer {
 private:
-    GLuint m_handle;       // OpenGL handle for the index buffer
-    unsigned m_number;     // Number of indices stored in the buffer
+    GLuint m_handle;   // OpenGL handle for the index buffer
+    unsigned m_number; // Number of indices stored in the buffer
 
 public:
-    // Constructor: initializes the index buffer object
-    IndexBuffer();
+    IndexBuffer(); // Initializes the index buffer object
 
     // Deleted copy constructor to prevent copying of IndexBuffer objects
     IndexBuffer(const IndexBuffer& other) = delete;

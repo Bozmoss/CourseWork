@@ -11,7 +11,7 @@ FragVars::FragVars(std::vector<float> &res, float &aX, float &aY, std::vector<st
 }
 
 void FragVars::init(Program &p) {
-    materialObjectUpdate(p);
+    materialObjectDataUpdate(p);
     resLocation = glGetUniformLocation(p.handle(), "res");
     aYLocation = glGetUniformLocation(p.handle(), "aY");
     aXLocation = glGetUniformLocation(p.handle(), "aX");
@@ -28,7 +28,7 @@ void FragVars::update(Program& p, float &aX, float &aY, std::vector<Material> ma
     this->objects = objects;
     this->aX = aX;
     this->aY = aY;
-    materialObjectUpdate(p);
+    materialObjectDataUpdate(p);
     glUniform3f(resLocation, res.at(0), res.at(1), res.at(2));
     glUniform1f(aXLocation, this->aX);
     glUniform1f(aYLocation, this->aY);
@@ -65,7 +65,7 @@ void FragVars::update(Program& p, float &aX, float &aY, std::vector<Material> ma
     glUniform3fv(lightColsLocation, 100, &lightColsArr[0][0]);
 }
 
-void FragVars::materialObjectUpdate(Program& p) {
+void FragVars::materialObjectDataUpdate(Program& p) {
     std::vector<float> result;
     for (int i = 0; i < 100; i++) {
         if (i < materials.size()) {
@@ -86,15 +86,15 @@ void FragVars::materialObjectUpdate(Program& p) {
     }
     for (int i = 0; i < 100; i++) {
         if (i < objects.size()) {
-            result.push_back(objects.at(i).type);
-            result.push_back(objects.at(i).material);
-            result.push_back(objects.at(i).x);
-            result.push_back(objects.at(i).y);
-            result.push_back(objects.at(i).z);
-            result.push_back(objects.at(i).l1);
+            result.push_back(objects.at(i).getData()->type);
+            result.push_back(objects.at(i).getData()->material);
+            result.push_back(objects.at(i).getData()->x);
+            result.push_back(objects.at(i).getData()->y);
+            result.push_back(objects.at(i).getData()->z);
+            result.push_back(objects.at(i).getData()->l1);
             // Add padding to ensure each Object struct is 32 bytes in std140 layout
-            result.push_back(0.0f); // Padding to align the next Object
-            result.push_back(0.0f); // Padding to align the next Object
+            result.push_back(0.0f); // Padding to align the next ObjectData
+            result.push_back(0.0f); // Padding to align the next ObjectData
         }
         else {
             for (int j = 0; j < 8; j++) {

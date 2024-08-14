@@ -133,6 +133,7 @@
     <ClCompile Include="fragvars.cpp" />
     <ClCompile Include="indexbuffer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="object.cpp" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="programH.hpp" />
     <ClCompile Include="shader.cpp" />

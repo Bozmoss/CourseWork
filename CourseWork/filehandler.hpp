@@ -1,30 +1,25 @@
-#pragma once  // Include guard to ensure header is included only once
+#pragma once
 
-#include <string>  // Include necessary header for std::string
+#include <string>  // String data type library
 
 class FileHandler
 {
 public:
-    // Constructor: initializes FileHandler with a given fileName
-    FileHandler(const char* fileName);
+    
+    FileHandler(const char* fileName);                // Initializes FileHandler with a given fileName
 
-    // Destructor: cleans up resources when FileHandler is destroyed
-    ~FileHandler();
+    ~FileHandler();                                   // Cleans up resources when FileHandler is destroyed
 
-    // readFile: reads content from the file and returns it as a string
-    std::string readFile() const;
+    std::string readFile() const;                     // Reads content from the file and returns it as a string
 
-    // writeFile: writes the given content to the file
-    void writeFile(const std::string& content) const;
+    void writeFile(const std::string& content) const; // Writes the given content to the file
 
-    // fileName: returns the name of the file as a C-style string
-    const char* fileName() const;
+    const char* fileName() const;                     // Returns the name of the file as a C-style string
 
-    // error: returns true if an error occurred during file operations
-    bool error() const;
+    bool error() const;                               // Returns true if an error occurred during file operations
 
 private:
-    bool m_error;  // Flag indicating if an error occurred
+    bool m_error;     // Flag indicating if an error occurred
 
-    char* m_fileName;  // Pointer to store the filename (C-style string)
+    char* m_fileName; // Pointer to store the filename
 };

@@ -21,7 +21,7 @@ struct Material {
     float c; //Shininess
 };
 
-struct Object {
+struct ObjectData {
     float type;
     float material;
     float x;
@@ -32,7 +32,7 @@ struct Object {
 
 layout(std140) uniform bindPoint {
     Material materials[materialsLen];
-    Object objects[objectsLen];
+    ObjectData objects[objectsLen];
 };
 
 struct SDF {
