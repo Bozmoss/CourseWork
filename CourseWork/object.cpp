@@ -6,7 +6,7 @@ Object::Object(ObjectData data):
 
 void Object::update(float f) {
     if (data.y - data.l1 <= -1.5 && !data.moving) {
-        data.dx *= f;                         // Dampening due to friction
+        data.dx *= f;
     }
     data.x += data.dx;
     data.y += data.dy;
@@ -14,13 +14,13 @@ void Object::update(float f) {
 }
 
 void Object::applyGravity(float g, float r) {
-    if (!data.moving) {                        // If the object is not being dragged currently
-        if (data.down) {                       // If not currently bouncing
+    if (!data.moving) {
+        if (data.down) {
             data.dy -= g;
-            if (data.y - data.l1 < -1.5) {        // Checking against floor height and setting to floor height
+            if (data.y - data.l1 < -1.5) {
                 data.y = -1.5 + data.l1;
-                data.dy = -data.dy * r;           // Dampening due to restitution
-                if (abs(data.dy) < 0.000001) { // FLOATING POINT
+                data.dy = -data.dy * r;
+                if (abs(data.dy) < 0.000001) {
                     data.dy = 0.0;
                     data.down = false;
                 }

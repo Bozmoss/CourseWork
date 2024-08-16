@@ -1,38 +1,59 @@
+/*****************************************************************//**
+ * \file   shader.hpp
+ * \brief  GLSL shader class
+ * 
+ * \author Ben
+ * \date   August 2024
+ *********************************************************************/
 #pragma once
 
-#include <GL/glew.h>       // Include GLEW header for OpenGL functionality
-#include "filehandler.hpp" // Include filehandler.hpp for file handling utilities
+#include <GL/glew.h>
+#include "filehandler.hpp"
 
 class Shader {
 private:
-    GLint m_handle;         // OpenGL handle for the shader
-    bool m_inError;         // Flag indicating if an error occurred during shader compilation
-    std::string m_error;    // Error message if compilation fails
+    GLint m_handle;
+    bool m_inError;
+    std::string m_error;
 
 public:
     enum Type {
-        VERTEX,             // Enum value for vertex shader
-        FRAGMENT            // Enum value for fragment shader
+        VERTEX,
+        FRAGMENT
     };
 
-    // Constructor: loads and compiles a shader of specified type from the given file
+    /**
+     * Initialisation of the shader class
+     * 
+     * \param VERTEX or FRAGMENT type
+     * \param char* fileName
+     */
     Shader(Type type, const char* fileName);
 
-    // Deleted copy constructor to prevent copying of Shader objects
     Shader(const Shader& other) = delete;
 
-    // Deleted assignment operator to prevent assignment of Shader objects
     Shader operator=(const Shader& other) = delete;
 
-    // Destructor: cleans up the shader resources
     ~Shader();
 
-    // Getter for m_handle: returns the OpenGL handle of the shader
+    /**
+     * Returns the handle of the shader
+     * 
+     * \return GLint
+     */
     GLint handle() const;
 
-    // Getter for m_inError: returns true if an error occurred during shader compilation
+    /**
+     * Determines if there has been an error
+     * 
+     * \return bool
+     */
     bool inError() const;
 
-    // Getter for m_error: returns the error message if compilation fails
+    /**
+     * Returns the error message
+     * 
+     * \return string
+     */
     const std::string& error() const;
 };

@@ -1,32 +1,69 @@
+/*****************************************************************//**
+ * \file   fragvars.hpp
+ * \brief  Fragment shader variable handler
+ * 
+ * \author Ben
+ * \date   August 2024
+ *********************************************************************/
 #pragma once
 
-#include <GL/glew.h>         // OpenGL Extension Wrangler library
-#include <vector>            // Vector data structure library
-#include <chrono>            // Time method library
+#include <GL/glew.h>
+#include <vector>
+#include <chrono>
 
-#include "material.hpp"      // Structure describing the material properties of an object
-#include "object.hpp"        // Structure describing the physical location and states of a shape on the screen
-#include "programH.hpp"      // Class for linking OpenGL shaders
-#include "uniformbuffer.hpp" // Class for graphics card communication regarding uniform buffer blocks in an OpenGL fragment shader
+#include "material.hpp"
+#include "object.hpp"
+#include "programH.hpp"
+#include "uniformbuffer.hpp"
 
 class FragVars {
 private:
-    std::vector<float> res;                                                                        // Screen resolution
-    float aX, aY;                                                                                  // Rotation angles
-    std::vector<std::vector<float>> lights, lightCols;                                             // Light positions and colours
+    std::vector<float> res;
+    float aX, aY;
+    std::vector<std::vector<float>> lights, lightCols;
     std::vector<Material> materials;
     std::vector<Object> objects;
-    std::chrono::steady_clock::time_point time;                                                    // Used for elapsed time
+    std::chrono::steady_clock::time_point time;
     GLint resLocation, aYLocation, aXLocation, timeLocation, lightsLocation, lightColsLocation,
-        materialsLocation, objectsLocation, lightsLLocation, materialsLLocation, objectsLLocation; // Location in fragment shader of given variables
+        materialsLocation, objectsLocation, lightsLLocation, materialsLLocation, objectsLLocation;
     UniformBuffer ub;
 
-    void materialObjectDataUpdate(Program& p);                                                         // Update the material and object arrays to pass to the uniform buffer
+    /**
+     * Updates material and object data
+     * 
+     * \param Program p
+     */
+    void materialObjectDataUpdate(Program& p);
 public:
+    /**
+     * Initialises the fragment variable handler class
+     * 
+     * \param vector<float> res
+     * \param float aX
+     * \param float aY
+     * \param vector<vector<flaot>> lights
+     * \param vector<vector<float>> lightCols
+     * \param vector<Material> materials
+     * \param vector<Object> objects
+     */
     FragVars(std::vector<float>& res, float& aX, float& aY, std::vector<std::vector<float>>& lights,
-        std::vector<std::vector<float>>& lightCols, std::vector<Material>& materials, std::vector<Object>& objects); // Initialises FragVars with all the required variables
+        std::vector<std::vector<float>>& lightCols, std::vector<Material>& materials, std::vector<Object>& objects);
 
-    void init(Program &p);                                                                                           // Setup of variables
+    /**
+     * Initial update of data
+     * 
+     * \param Program p
+     */
+    void init(Program &p);
 
-    void update(Program& p, float &aX, float &aY, std::vector<Material> materials, std::vector<Object> objects);     // Update when something changes
+    /**
+     * Update of data
+     * 
+     * \param Program p
+     * \param float aX
+     * \param float aY
+     * \param vector<Material> materials
+     * \param vector<Object> objects
+     */
+    void update(Program& p, float &aX, float &aY, std::vector<Material> materials, std::vector<Object> objects);
 };

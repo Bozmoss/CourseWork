@@ -1,34 +1,56 @@
+/*****************************************************************//**
+ * \file   programH.hpp
+ * \brief  Shader link program
+ * 
+ * \author Ben
+ * \date   August 2024
+ *********************************************************************/
 #pragma once
 
-#include <GL/glew.h>       // Include GLEW header for OpenGL types and functions
-#include "shader.hpp"      // Include header for the Shader class
+#include <GL/glew.h>
+#include "shader.hpp"
 
 class Program {
 private:
-    GLint m_handle;        // OpenGL handle for the shader program
+    GLint m_handle;
 
 public:
-    // Constructor: initializes the shader program object
+    /**
+     * Initialisation of the program class
+     * 
+     */
     Program();
 
-    // Deleted copy constructor to prevent copying of Program objects
     Program(const Program& other) = delete;
 
-    // Deleted assignment operator to prevent assignment of Program objects
     Program operator=(const Program& other) = delete;
 
-    // Destructor: cleans up the shader program object
     ~Program();
 
-    // Getter for m_handle: returns the OpenGL handle of the shader program
+    /**
+     * Returns the handle of the program
+     * 
+     * \return GLint
+     */
     GLint handle() const;
 
-    // Attaches a shader to the shader program
+    /**
+     * Attaches a shader
+     * 
+     * \param Shader shader
+     */
     void attachShader(const Shader& shader);
 
-    // Detaches a shader from the shader program
+    /**
+     * Detaches a shader
+     * 
+     * \param Shader shader
+     */
     void detachShader(const Shader& shader);
 
-    // Activates the shader program for use in rendering
+    /**
+     * Starts the program
+     * 
+     */
     void activate();
 };

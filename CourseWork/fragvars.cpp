@@ -92,9 +92,8 @@ void FragVars::materialObjectDataUpdate(Program& p) {
             result.push_back(objects.at(i).getData()->y);
             result.push_back(objects.at(i).getData()->z);
             result.push_back(objects.at(i).getData()->l1);
-            // Add padding to ensure each Object struct is 32 bytes in std140 layout
-            result.push_back(0.0f); // Padding to align the next ObjectData
-            result.push_back(0.0f); // Padding to align the next ObjectData
+            result.push_back(0.0f);
+            result.push_back(0.0f);
         }
         else {
             for (int j = 0; j < 8; j++) {

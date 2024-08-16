@@ -1,25 +1,57 @@
+/*****************************************************************//**
+ * \file   filehandler.hpp
+ * \brief  File handling class
+ * 
+ * \author Ben
+ * \date   August 2024
+ *********************************************************************/
 #pragma once
 
-#include <string>  // String data type library
+#include <string>
 
 class FileHandler
 {
 public:
     
-    FileHandler(const char* fileName);                // Initializes FileHandler with a given fileName
+    /**
+     * Initialises the file handler class
+     * 
+     * \param char* fileName
+     */
+    FileHandler(const char* fileName);
 
-    ~FileHandler();                                   // Cleans up resources when FileHandler is destroyed
+    ~FileHandler();
 
-    std::string readFile() const;                     // Reads content from the file and returns it as a string
+    /**
+     * Reads a file
+     * 
+     * \return string
+     */
+    std::string readFile() const;
 
-    void writeFile(const std::string& content) const; // Writes the given content to the file
+    /**
+     * Writes to a file
+     * 
+     * \param string content
+     */
+    void writeFile(const std::string& content) const;
 
-    const char* fileName() const;                     // Returns the name of the file as a C-style string
+    /**
+     * Returns the file name of the open file
+     * 
+     * \return char*
+     */
+    const char* fileName() const;
 
-    bool error() const;                               // Returns true if an error occurred during file operations
+    /**
+     * Determines whether an error has occured
+     * 
+     * \return bool
+     */
+    bool error() const;
 
 private:
-    bool m_error;     // Flag indicating if an error occurred
+    bool m_error;
 
-    char* m_fileName; // Pointer to store the filename
+    char* m_fileName;
 };

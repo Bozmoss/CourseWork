@@ -12,11 +12,11 @@ struct Material {
     float r;
     float g;
     float b;
-    float Ka; //Coefficient of ambience
-    float Kd; //Coefficient of diffuse
-    float Ks; //Coefficenet of speculance
-    float Kr; //Coefficenet of reflection
-    float c; //Shininess
+    float Ka;
+    float Kd;
+    float Ks;
+    float Kr;
+    float c;
 };
 
 struct ObjectData {
@@ -36,7 +36,5 @@ layout(std140) uniform bindPoint {
 void main()
 {
     vec3 debugColor = vec3(objects[0].type, objects[0].type, objects[1].l1);
-
-    // Temporary debug output to visualize the values
     FragColor = vec4(debugColor, 1.0);
 }

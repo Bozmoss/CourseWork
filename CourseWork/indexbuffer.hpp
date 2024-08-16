@@ -1,31 +1,51 @@
+/*****************************************************************//**
+ * \file   indexbuffer.hpp
+ * \brief  Buffer for vertex indices
+ * 
+ * \author Ben
+ * \date   August 2024
+ *********************************************************************/
 #pragma once
 
-#include <GL/glew.h> // OpenGL Extension Wrangler library
-#include <vector>    // Vector data structure library
+#include <GL/glew.h>
+#include <vector>
 
 class IndexBuffer {
 private:
-    GLuint m_handle;   // OpenGL handle for the index buffer
-    unsigned m_number; // Number of indices stored in the buffer
+    GLuint m_handle;
+    unsigned m_number;
 
 public:
-    IndexBuffer(); // Initializes the index buffer object
+    /**
+     * Initialisation of the index buffer class
+     * 
+     */
+    IndexBuffer();
 
-    // Deleted copy constructor to prevent copying of IndexBuffer objects
     IndexBuffer(const IndexBuffer& other) = delete;
 
-    // Deleted assignment operator to prevent assignment of IndexBuffer objects
     IndexBuffer operator=(const IndexBuffer& other) = delete;
 
-    // Destructor: cleans up the index buffer object
     ~IndexBuffer();
 
-    // Getter for m_handle: returns the OpenGL handle of the index buffer
+    /**
+     * Returns the handle of the buffer
+     * 
+     * \return GLuint
+     */
     GLuint handle() const;
 
-    // Fills the index buffer with the provided indices
+    /**
+     * Fills the buffer
+     * 
+     * \param vector<GLuint> indices
+     */
     void fill(const std::vector<GLuint>& indices);
 
-    // Getter for m_number: returns the number of indices stored in the buffer
+    /**
+     * Returns the number of indices
+     * 
+     * \return unsigned
+     */
     unsigned number() const;
 };
