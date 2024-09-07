@@ -9,7 +9,7 @@ Game::Point Game::screenToNDC(float x, float y) {
     return ndc;
 }
 
-void drawRay(std::vector<float> ro, std::vector<float> rd, float distance) {
+void Game::drawRay(std::vector<float> ro, std::vector<float> rd, float distance) {
     std::vector<float> p = {
             ro.at(0) + distance * rd.at(0),
             ro.at(1) + distance * rd.at(1),
