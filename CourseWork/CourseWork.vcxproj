@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="filehandler.cpp" />
     <ClCompile Include="fragvars.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="indexbuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="fragvars.hpp" />
     <ClInclude Include="filehandler.hpp" />
+    <ClInclude Include="game.hpp" />
     <ClInclude Include="GLOBAL.hpp" />
     <ClInclude Include="indexbuffer.hpp" />
     <ClInclude Include="material.hpp" />

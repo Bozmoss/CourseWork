@@ -1,8 +1,12 @@
 #include "object.hpp"
 
+#include <iostream>
+
 Object::Object(ObjectData data):
     data{ data }, 
     lastT{ 0 } {}
+
+float Object::SDF() {}
 
 void Object::update(float f) {
     if (data.y - data.l1 <= -1.5 && !data.moving) {
@@ -39,8 +43,16 @@ void Object::stopMoving() {
     data.moving = false;
 }
 
+bool Object::isClicked(std::vector<float> ro, std::vector<float> rd, float finalT) {
+    return false;
+}
+
 float Object::getLastT() {
     return lastT;
+}
+
+void Object::reset() {
+    lastT = 0;
 }
 
 ObjectData *Object::getData() {
@@ -56,29 +68,24 @@ float Sphere::SDF(float px, float py, float pz, float cx, float cy, float cz, fl
     ) - r;
 }
 
-bool Sphere::isClicked(float xpos, float ypos, float zpos, float finalT) {
-    float t = 0.0;
-    const float maxT = 10.0;
-    while (t < maxT) {
-        float p[3] = {
-            t * xpos,
-            t * ypos,
-            t * zpos
+bool Sphere::isClicked(std::vector<float> ro, std::vector<float> rd, float finalT) {
+    float t = 0.0f;
+    for (int i = 0; i < 100; i++) {
+        std::vector<float> p = {
+            ro.at(0) + t * rd.at(0),
+            ro.at(1) + t * rd.at(1),
+            ro.at(2) + t * rd.at(2)
         };
-        float res = SDF(
-            p[0],
-            p[1],
-            p[2],
-            data.x,
-            data.y,
-            data.z,
-            data.l1
-        );
-        if (res < 0.0001) {
+        float sdf = SDF(p.at(0), p.at(1), p.at(2), data.x, data.y, data.z, data.l1);
+        if (sdf < 0.001f && t < finalT) {
+            lastT = t;
+            return true;
+        }
+        t += sdf;
+        if (t > 100.0f) {
+            lastT = t;
             break;
         }
-        t += res;
     }
-    lastT = t;
-    return (t < finalT && t < maxT);
+    return false;
 }

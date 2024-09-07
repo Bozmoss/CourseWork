@@ -10,6 +10,7 @@
 #include <GL/glew.h>
 #include <vector>
 #include <chrono>
+#include <memory>
 
 #include "material.hpp"
 #include "object.hpp"
@@ -22,7 +23,7 @@ private:
     float aX, aY;
     std::vector<std::vector<float>> lights, lightCols;
     std::vector<Material> materials;
-    std::vector<Object> objects;
+    std::vector<std::shared_ptr<Object>> objects;
     std::chrono::steady_clock::time_point time;
     GLint resLocation, aYLocation, aXLocation, timeLocation, lightsLocation, lightColsLocation,
         materialsLocation, objectsLocation, lightsLLocation, materialsLLocation, objectsLLocation;
@@ -46,8 +47,8 @@ public:
      * \param vector<Material> materials
      * \param vector<Object> objects
      */
-    FragVars(std::vector<float>& res, float& aX, float& aY, std::vector<std::vector<float>>& lights,
-        std::vector<std::vector<float>>& lightCols, std::vector<Material>& materials, std::vector<Object>& objects);
+    FragVars(std::vector<float>& res, float aX, float aY, std::vector<std::vector<float>>& lights,
+        std::vector<std::vector<float>>& lightCols, std::vector<Material>& materials, std::vector<std::shared_ptr<Object>>& objects);
 
     /**
      * Initial update of data
@@ -65,5 +66,5 @@ public:
      * \param vector<Material> materials
      * \param vector<Object> objects
      */
-    void update(Program& p, float &aX, float &aY, std::vector<Material> materials, std::vector<Object> objects);
+    void update(Program& p, const float &aX, const float &aY, std::vector<Material> materials, std::vector<std::shared_ptr<Object>>& objects);
 };

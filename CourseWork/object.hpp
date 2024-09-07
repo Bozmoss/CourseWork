@@ -38,7 +38,7 @@ protected:
      * 
      * \return float
      */
-    float SDF() {}
+    float SDF();
 public:
     /**
      * Initialises the object class
@@ -77,7 +77,7 @@ public:
      * \param float finalT
      * \return bool
      */
-    bool isClicked(float xpos, float ypos, float zpos, float finalT) { return false; }
+    virtual bool isClicked(std::vector<float> ro, std::vector<float> rd, float finalT);
 
     /**
      * Gets the last SDF t value
@@ -85,6 +85,12 @@ public:
      * \return float
      */
     float getLastT();
+
+    /**
+     * Resets lastT
+     * 
+     */
+    void reset();
 
     /**
      * Returns all data relating to the object
@@ -117,5 +123,5 @@ public:
      */
     Sphere(ObjectData data) : Object(data) {}
 
-    bool isClicked(float xpos, float ypos, float zpos, float finalT);
+    bool isClicked(std::vector<float> ro, std::vector<float> rd, float finalT) override;
 };

@@ -1,6 +1,6 @@
 #include "fragvars.hpp"
 
-FragVars::FragVars(std::vector<float> &res, float &aX, float &aY, std::vector<std::vector<float>> &lights, std::vector<std::vector<float>> &lightCols, std::vector<Material> &materials, std::vector<Object> &objects) {
+FragVars::FragVars(std::vector<float> &res, float aX, float aY, std::vector<std::vector<float>> &lights, std::vector<std::vector<float>> &lightCols, std::vector<Material> &materials, std::vector<std::shared_ptr<Object>> &objects) {
     this->res = res;
     this->aX = aX;
     this->aY = aY;
@@ -23,7 +23,7 @@ void FragVars::init(Program &p) {
     objectsLLocation = glGetUniformLocation(p.handle(), "objectsL");
     time = std::chrono::high_resolution_clock::now();
 }
-void FragVars::update(Program& p, float &aX, float &aY, std::vector<Material> materials, std::vector<Object> objects) {
+void FragVars::update(Program& p, const float &aX, const float &aY, std::vector<Material> materials, std::vector<std::shared_ptr<Object>>& objects) {
     this->materials = materials;
     this->objects = objects;
     this->aX = aX;
@@ -86,12 +86,12 @@ void FragVars::materialObjectDataUpdate(Program& p) {
     }
     for (int i = 0; i < 100; i++) {
         if (i < objects.size()) {
-            result.push_back(objects.at(i).getData()->type);
-            result.push_back(objects.at(i).getData()->material);
-            result.push_back(objects.at(i).getData()->x);
-            result.push_back(objects.at(i).getData()->y);
-            result.push_back(objects.at(i).getData()->z);
-            result.push_back(objects.at(i).getData()->l1);
+            result.push_back(objects.at(i)->getData()->type);
+            result.push_back(objects.at(i)->getData()->material);
+            result.push_back(objects.at(i)->getData()->x);
+            result.push_back(objects.at(i)->getData()->y);
+            result.push_back(objects.at(i)->getData()->z);
+            result.push_back(objects.at(i)->getData()->l1);
             result.push_back(0.0f);
             result.push_back(0.0f);
         }

@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <chrono>
 
 #include "GLOBAL.hpp"
@@ -20,113 +21,15 @@
 #include "fragvars.hpp"
 #include "material.hpp"
 #include "object.hpp"
+#include "game.hpp"
 
-#define PI 3.14159265359
-
-float aX = 0, aY = 0, lastX, lastY, g = 0.00003, r = 0.8, f = 0.7;
-bool firstMouse = true;
 std::vector<Material> materials;
-std::vector<Object> objects;
-
-struct Point {
-    float x;
-    float y;
-};
-
-Point screenToNDC(float x, float y) {
-    Point ndc;
-    ndc.x = 2.0f * x / WINDOW_WIDTH - 1.0f;
-    ndc.y = 1.0f - 2.0f * y / WINDOW_HEIGHT;
-    return ndc;
-}
-
-float sphereSDF(float px, float py, float pz, float cx, float cy, float cz, float r) {
-    return sqrt(
-        (cx - px) * (cx - px) +
-        (cy - py) * (cy - py) +
-        (cz - pz) * (cz - pz)
-    ) - r;
-}
-
-float torusSDF(float px, float py, float pz, float tx, float ty, int i) {
-    float q[2] = { sqrt(px * px + pz * pz) - tx, py };
-    return sqrt(q[0] * q[0] + q[1] * q[1]) - ty;
-
-}
+std::vector<std::shared_ptr<Object>> objects;
+Game game(objects);
+const float g = 0.00003, r = 0.8, f = 0.7;
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
-        for (Object& o : objects) {
-            o.stopMoving();
-        }
-        firstMouse = true;
-        return;
-    }
-
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float sensitivity = 0.01f;
-
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos;
-        lastX = xpos;
-        lastY = ypos;
-        xoffset *= sensitivity;
-        yoffset *= sensitivity;
-
-        aX += yoffset;
-        aY -= xoffset;
-
-        if (aX > PI / 4)
-            aX = PI / 4;
-        if (aX < -PI / 2)
-            aX = -PI / 2;
-    }
-    else {
-        Point pos = screenToNDC(xpos, ypos);
-        Point last = screenToNDC(lastX, lastY);
-        float xoffset = pos.x - last.x;
-        float yoffset = pos.y - last.y;
-        xoffset *= sensitivity * 100;
-        yoffset *= sensitivity * 100;
-        if (abs(xoffset) < 0.001 && abs(yoffset) < 0.001) {
-            xoffset = 0;
-            yoffset = 0;
-        }
-        float finalT = 11.0;
-        int finalIndex = -1;
-        for (int i = 0; i < objects.size(); i++) {
-            if (objects.at(i).isClicked(pos.x, pos.y, objects.at(i).getData()->z, finalT)) {
-                finalT = objects.at(i).getLastT();
-                finalIndex = i;
-            }
-        }
-        if (finalIndex != -1) {
-            objects.at(finalIndex).getData()->moving = true;
-            objects.at(finalIndex).getData()->dx = xoffset;
-            objects.at(finalIndex).getData()->dy = yoffset;
-        }
-        for (Object& o : objects) {
-            if (o.getData()->moving) {
-                if (xoffset != 0 || yoffset != 0) {
-                    o.getData()->dx = xoffset;
-                    o.getData()->dy = yoffset;
-                }
-                else {
-                    o.getData()->dx = 0;
-                    o.getData()->dy = 0;
-                }
-            }
-        }
-        lastX = xpos;
-        lastY = ypos;
-    }
+    game.mouseEvent(window, xpos, ypos);
 }
 
 void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -136,14 +39,14 @@ void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
 }
 
 void gravity() {
-    for (Object& o : objects) {
-        o.applyGravity(g, r);
+    for (auto& o : objects) {
+        o->applyGravity(g, r);
     }
 }
 
 void updateObjectDatas() {
-    for (Object& o : objects) {
-        o.update(f);
+    for (auto& o : objects) {
+        o->update(f);
     }
 }
 
@@ -212,12 +115,13 @@ int main(int argc, char** argv) {
     for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {
         switch (objectDatas[i].type) {
         case 0:
-            objects.push_back(Sphere(objectDatas[i]));
+            auto s = std::make_shared<Sphere>(objectDatas[i]);
+            objects.push_back(s);
             break;
         }
     }
 
-    FragVars fvs(res, aX, aY, lights, lightCols, materials, objects);
+    FragVars fvs(res, game.getAX(), game.getAY(), lights, lightCols, materials, objects);
 
     std::vector<GLfloat> verts = {
         -1.0f, -1.0f,
@@ -246,7 +150,7 @@ int main(int argc, char** argv) {
     auto startTime = std::chrono::high_resolution_clock::now();
 
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         p.activate();
 
@@ -254,7 +158,9 @@ int main(int argc, char** argv) {
 
         updateObjectDatas();
 
-        fvs.update(p, aX, aY, materials, objects);
+        game.updateObjects(objects);
+
+        fvs.update(p, game.getAX(), game.getAY(), materials ,objects);
 
         glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);
 
