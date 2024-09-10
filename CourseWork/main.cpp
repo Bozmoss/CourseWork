@@ -29,7 +29,7 @@ Game game(objects);
 const float g = 0.00003, r = 0.8, f = 0.7;
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
-    game.mouseEvent(window, xpos, ypos);
+    game.mouseEvent(window, xpos, ypos, g, r);
 }
 
 void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
 
     ObjectData objectDatas[] = {
         {0, 0, -0.8, 0.0, 0.0, 0.5},
-        {0, 1, 0.8, 0.0, 0.0, 0.3}
+        {0, 1, 0.8, 0.0, 0.0, 0.4}
     };
 
     for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {

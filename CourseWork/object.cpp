@@ -77,6 +77,7 @@ bool Sphere::isClicked(std::vector<float> ro, std::vector<float> rd, float final
             ro.at(2) + t * rd.at(2)
         };
         float sdf = SDF(p.at(0), p.at(1), p.at(2), data.x, data.y, data.z, data.l1);
+        //std::cout << "SDF at t = " << t << ": " << sdf << "\n";
         if (sdf < 0.001f && t < finalT) {
             lastT = t;
             return true;

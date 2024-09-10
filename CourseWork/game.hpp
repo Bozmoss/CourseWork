@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <memory>
@@ -29,13 +28,11 @@ private:
 
     Point screenToNDC(float x, float y);
 
-    void drawRay(std::vector<float> ro, std::vector<float> rd, float distance);
-
 public:
 
     Game(std::vector<std::shared_ptr<Object>> &objects);
 
-    void mouseEvent(GLFWwindow* window, double xpos, double ypos);
+    void mouseEvent(GLFWwindow* window, double xpos, double ypos, float g, float r);
 
     void updateObjects(std::vector<std::shared_ptr<Object>>& objects);
 

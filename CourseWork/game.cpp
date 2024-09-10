@@ -9,23 +9,11 @@ Game::Point Game::screenToNDC(float x, float y) {
     return ndc;
 }
 
-void Game::drawRay(std::vector<float> ro, std::vector<float> rd, float distance) {
-    std::vector<float> p = {
-            ro.at(0) + distance * rd.at(0),
-            ro.at(1) + distance * rd.at(1),
-            ro.at(2) + distance * rd.at(2)
-    };
-    glBegin(GL_LINES);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glVertex3f(ro.at(0), ro.at(1), ro.at(2));
-    glVertex3f(p.at(0), p.at(1), p.at(2));
-    glEnd();
-}
-
 Game::Game(std::vector<std::shared_ptr<Object>> &objects):
     objects { objects } {}
 
-void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos) {
+void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos, float g, float r) {
+    float xoffset = 0, yoffset = 0;
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
         for (auto& o : objects) {
             o->stopMoving();
@@ -43,10 +31,10 @@ void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos) {
     }
 
     float sensitivity = 0.01f;
-
+    
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE) {
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos;
+        xoffset = xpos - lastX;
+        yoffset = lastY - ypos;
         lastX = xpos;
         lastY = ypos;
         xoffset *= sensitivity;
@@ -65,19 +53,24 @@ void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos) {
         Point last = screenToNDC(lastX, lastY);
 
         std::vector<float> posStart = {
-            cos(aY) * pos.x - sin(aY),
-            sin(aX) * sin(aY) * pos.x + cos(aX) * pos.y + sin(aX) * cos(aY),
-            -sin(aY) * cos(aX) * pos.x + sin(aX) * pos.y - cos(aX) * cos(aY)
-        };
-        std::vector<float> posEnd = {
-            cos(aY)* pos.x + sin(aY),
-            sin(aX)* sin(aY)* pos.x + cos(aX) * pos.y - sin(aX) * cos(aY),
-            -sin(aY) * cos(aX) * pos.x + sin(aX) * pos.y + cos(aX) * cos(aY)
+            0.0, 0.0, -5
         };
 
-        float mag = sqrt((posEnd[0] - posStart[0]) * (posEnd[0] - posStart[0]) +
+        float fovY = 90.0 * (PI / 180.0);
+        float aspectR = WINDOW_WIDTH / WINDOW_HEIGHT;
+        float fovX = 2 * atan(tan(fovY / 2.0) * aspectR);
+        float viewX = pos.x * tan(fovX / 2.0);
+        float viewY = pos.y * tan(fovY / 2.0);
+
+        std::vector<float> posEnd = {
+            viewX, viewY, -1
+        };
+
+        float mag = sqrt(
+            (posEnd[0] - posStart[0]) * (posEnd[0] - posStart[0]) +
             (posEnd[1] - posStart[1]) * (posEnd[1] - posStart[1]) +
-            (posEnd[2] - posStart[2]) * (posEnd[2] - posStart[2]));
+            (posEnd[2] - posStart[2]) * (posEnd[2] - posStart[2])
+        );
 
         std::vector<float> posRd = {
             (posEnd[0] - posStart[0]) / mag,
@@ -85,12 +78,10 @@ void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos) {
             (posEnd[2] - posStart[2]) / mag
         };
 
-        drawRay(posStart, posRd, 100.0f);
-
-        float xoffset = pos.x - last.x;
-        float yoffset = pos.y - last.y;
-        xoffset *= sensitivity * 100;
-        yoffset *= sensitivity * 100;
+        xoffset = pos.x - last.x;
+        yoffset = pos.y - last.y;
+        xoffset *= sensitivity * 200;
+        yoffset *= sensitivity * 200;
         if (abs(xoffset) < 0.001 && abs(yoffset) < 0.001) {
             xoffset = 0;
             yoffset = 0;
@@ -123,12 +114,19 @@ void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos) {
                 }
             }
             else {
-                o->getData()->dx = 0;
-                o->getData()->dy = 0;
+                o->applyGravity(g, r);
             }
         }
         lastX = xpos;
         lastY = ypos;
+    }
+    for (auto& o : objects) {
+        if (o->getData()->moving) {
+            if (xoffset == 0 || yoffset == 0) {
+                o->getData()->dx = 0;
+                o->getData()->dy = 0;
+            }
+        }
     }
 }
 
@@ -143,3 +141,13 @@ float Game::getAX() {
 float Game::getAY() {
     return aY;
 }
+
+//TODO: Add rigid body dynamics
+// - add to object struct vel, angularVel, mass
+// - update(): apply forces as vectors -> vector class?
+// - if vector class then change object struct to use vector class
+// - resolveCollision(): use collision normal, relativeVel (along normal) (> 0 return), e coeff, j = -(1+e) * velalongnorm / (1 / m1 + 1/ m2)
+//   impulse = j * norm, vel1 -= imp/m, vel2 += imp/m
+// - collision if SDF at possible point of contact < 0 (posibly)
+//TODO: Improve mouse detection
+//TODO: Add UI and main menus as described in design
