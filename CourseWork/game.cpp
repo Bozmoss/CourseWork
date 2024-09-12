@@ -99,22 +99,22 @@ void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos, float g, flo
         }
         if (finalIndex != -1) {
             objects.at(finalIndex)->getData()->moving = true;
-            objects.at(finalIndex)->getData()->dx = xoffset;
-            objects.at(finalIndex)->getData()->dy = yoffset;
+            objects.at(finalIndex)->getData()->vel.x = xoffset;
+            objects.at(finalIndex)->getData()->vel.y = yoffset;
         }
         for (auto& o : objects) {
             if (o->getData()->moving) {
                 if (xoffset != 0 || yoffset != 0) {
-                    o->getData()->dx = xoffset;
-                    o->getData()->dy = yoffset;
+                    o->getData()->vel.x = xoffset;
+                    o->getData()->vel.y = yoffset;
                 }
                 else {
-                    o->getData()->dx = 0;
-                    o->getData()->dy = 0;
+                    o->getData()->vel.x = 0;
+                    o->getData()->vel.y = 0;
                 }
             }
             else {
-                o->applyGravity(g, r);
+                o->updateObject(g, r);
             }
         }
         lastX = xpos;
@@ -123,8 +123,8 @@ void Game::mouseEvent(GLFWwindow* window, double xpos, double ypos, float g, flo
     for (auto& o : objects) {
         if (o->getData()->moving) {
             if (xoffset == 0 || yoffset == 0) {
-                o->getData()->dx = 0;
-                o->getData()->dy = 0;
+                o->getData()->vel.x = 0;
+                o->getData()->vel.y = 0;
             }
         }
     }

@@ -139,6 +139,7 @@
     <ClCompile Include="programH.hpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="uniformbuffer.cpp" />
+    <ClCompile Include="vec.cpp" />
     <ClCompile Include="vertexbuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="object.hpp" />
     <ClInclude Include="shader.hpp" />
     <ClInclude Include="uniformbuffer.hpp" />
+    <ClInclude Include="vec.hpp" />
     <ClInclude Include="vertexbuffer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

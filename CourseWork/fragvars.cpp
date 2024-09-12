@@ -88,9 +88,9 @@ void FragVars::materialObjectDataUpdate(Program& p) {
         if (i < objects.size()) {
             result.push_back(objects.at(i)->getData()->type);
             result.push_back(objects.at(i)->getData()->material);
-            result.push_back(objects.at(i)->getData()->x);
-            result.push_back(objects.at(i)->getData()->y);
-            result.push_back(objects.at(i)->getData()->z);
+            result.push_back(objects.at(i)->getData()->r.x);
+            result.push_back(objects.at(i)->getData()->r.y);
+            result.push_back(objects.at(i)->getData()->r.z);
             result.push_back(objects.at(i)->getData()->l1);
             result.push_back(0.0f);
             result.push_back(0.0f);

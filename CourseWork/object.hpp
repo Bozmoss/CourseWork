@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include "vec.hpp"
+
 /**
  * \param int type
  * \param int material
@@ -24,14 +26,17 @@
  */
 struct ObjectData {
     int type, material;
-    float x, y, z, l1, dx, dy, dz;
-    bool down = true, moving = false;
+    vec r;
+    float l1, mass;
+    vec vel, angVel;
+    bool down = true, moving = false, floor = false;
 };
 
 class Object {
 protected:
     ObjectData data;
     float lastT;
+    VecOps vOps;
 
     /**
      * Returns the evaluated SDF
@@ -60,7 +65,7 @@ public:
      * \param float g
      * \param float r
      */
-    void applyGravity(float g, float r);
+    void updateObject(float g, float r);
 
     /**
      * Stops an object from moving
@@ -78,6 +83,21 @@ public:
      * \return bool
      */
     virtual bool isClicked(std::vector<float> ro, std::vector<float> rd, float finalT);
+
+    /**
+     * Checks if two objects have collided
+     * 
+     * \param Object other
+     * \return bool
+     */
+    bool checkCollision(Object& other);
+
+    /**
+     * Resolves the collision between two objects
+     * 
+     * \param Object other
+     */
+    void resolveCollision(Object& other);
 
     /**
      * Gets the last SDF t value
@@ -114,7 +134,7 @@ protected:
      * \param float r
      * \return float
      */
-    float SDF(float px, float py, float pz, float cx, float cy, float cz, float r);
+    float SDF(vec p, vec c, float r);
 public:
     /**
      * Initialises the sphere object class

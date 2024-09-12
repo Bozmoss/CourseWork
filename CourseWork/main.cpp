@@ -11,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include <chrono>
+#include <cstdlib>
 
 #include "GLOBAL.hpp"
 #include "filehandler.hpp"
@@ -22,6 +23,7 @@
 #include "material.hpp"
 #include "object.hpp"
 #include "game.hpp"
+#include "vec.hpp"
 
 std::vector<Material> materials;
 std::vector<std::shared_ptr<Object>> objects;
@@ -36,11 +38,37 @@ void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwDestroyWindow(window);
     }
+    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        objects.clear();
+        int r[4] = { rand() % 100, rand() % 100, rand() % 100, rand() % 100 };
+        ObjectData objectDatas[] = {
+            {0, 0, vec {r[0] / 100.0f, 1.5, r[1] / 100.0f}, 0.5, 1.0},
+            {0, 1, vec {r[2] / 100.0f, 0.5, r[3] / 100.0f}, 0.4, 1.0}
+        };
+        for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {
+            switch (objectDatas[i].type) {
+            case 0:
+                auto s = std::make_shared<Sphere>(objectDatas[i]);
+                objects.push_back(s);
+                break;
+            }
+        }
+    }
 }
 
-void gravity() {
+void update() {
     for (auto& o : objects) {
-        o->applyGravity(g, r);
+        o->updateObject(g, r);
+    }
+
+    int i = 0;
+    for (auto& o : objects) {
+        for (int j = i + 1; j < objects.size(); j++) {
+            if (o->checkCollision((*objects.at(j)))) {
+                o->resolveCollision((*objects.at(j)));
+            }
+        }
+        i++;
     }
 }
 
@@ -51,6 +79,7 @@ void updateObjectDatas() {
 }
 
 int main(int argc, char** argv) {
+    srand((unsigned)time(NULL));
     int hres = glfwInit();
     if (hres != 1) {
         std::cout << "Failed to initialise GLFW";
@@ -63,6 +92,7 @@ int main(int argc, char** argv) {
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "OpenGL", glfwGetPrimaryMonitor(), NULL);
     glfwMakeContextCurrent(window);
@@ -107,9 +137,11 @@ int main(int argc, char** argv) {
         {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.0f, 16.0f}
     };
 
+    int r[4] = { rand() % 100, rand() % 100, rand() % 100, rand() % 100 };
+
     ObjectData objectDatas[] = {
-        {0, 0, -0.8, 0.0, 0.0, 0.5},
-        {0, 1, 0.8, 0.0, 0.0, 0.4}
+        {0, 0, vec {r[0] / 100.0f, 1.5, r[1] / 100.0f}, 0.5, 1.0},
+        {0, 1, vec {r[2] / 100.0f, 0.5, r[3] / 100.0f}, 0.4, 1.0}
     };
 
     for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {
@@ -154,7 +186,7 @@ int main(int argc, char** argv) {
 
         p.activate();
 
-        gravity();
+        update();
 
         updateObjectDatas();
 

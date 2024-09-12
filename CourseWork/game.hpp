@@ -14,6 +14,7 @@
 
 #include "GLOBAL.hpp"
 #include "object.hpp"
+#include "vec.hpp"
 
 class Game {
 private:
