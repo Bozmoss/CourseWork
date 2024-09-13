@@ -29,6 +29,7 @@ std::vector<Material> materials;
 std::vector<std::shared_ptr<Object>> objects;
 Game game(objects);
 const float g = 0.00003, r = 0.8, f = 0.7;
+const int bound = 50;
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
     game.mouseEvent(window, xpos, ypos, g, r);
@@ -40,18 +41,11 @@ void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
     }
     if (key == GLFW_KEY_R && action == GLFW_PRESS) {
         objects.clear();
-        int r[4] = { rand() % 100, rand() % 100, rand() % 100, rand() % 100 };
-        ObjectData objectDatas[] = {
-            {0, 0, vec {r[0] / 100.0f, 1.5, r[1] / 100.0f}, 0.5, 1.0},
-            {0, 1, vec {r[2] / 100.0f, 0.5, r[3] / 100.0f}, 0.4, 1.0}
-        };
-        for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {
-            switch (objectDatas[i].type) {
-            case 0:
-                auto s = std::make_shared<Sphere>(objectDatas[i]);
-                objects.push_back(s);
-                break;
-            }
+        for (int i = 0; i < bound; i++) {
+            int r = rand() % 1000, r2 = rand() % 1000;
+            ObjectData o = { 0, 0, vec {r / 1000.0f, (float)i / 10, r2 / 1000.0f}, 0.1, 1.0 };
+            auto s = std::make_shared<Sphere>(o);
+            objects.push_back(s);
         }
     }
 }
@@ -132,25 +126,32 @@ int main(int argc, char** argv) {
     };
 
     materials = {
-        {1.0f, 0.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.4f, 32.0f},
-        {0.0f, 1.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.0f, 32.0f},
-        {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.0f, 16.0f}
+        {1.0f, 0.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.0f, 32.0f},
+        {0.0f, 1.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.4f, 32.0f},
+        {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.0f, 16.0f},
+        {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.4f, 32.0f},
     };
 
-    int r[4] = { rand() % 100, rand() % 100, rand() % 100, rand() % 100 };
-
+    /*int r[6] = { rand() % 1000, rand() % 1000, rand() % 1000, rand() % 1000, rand() % 1000, rand() % 1000 };
     ObjectData objectDatas[] = {
-        {0, 0, vec {r[0] / 100.0f, 1.5, r[1] / 100.0f}, 0.5, 1.0},
-        {0, 1, vec {r[2] / 100.0f, 0.5, r[3] / 100.0f}, 0.4, 1.0}
-    };
+        {0, 0, vec {r[0] / 1000.0f, 0.2, r[1] / 1000.0f}, 0.1, 1.0},
+        {0, 1, vec {r[2] / 1000.0f, 0.5, r[3] / 1000.0f}, 0.1, 1.0},
+        {0, 3, vec {r[4] / 1000.0f, 0.8, r[5] / 1000.0f}, 0.1, 1.0}
+    };*/
 
-    for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {
+    /*for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {
         switch (objectDatas[i].type) {
         case 0:
             auto s = std::make_shared<Sphere>(objectDatas[i]);
             objects.push_back(s);
             break;
         }
+    }*/
+    for (int i = 0; i < bound; i++) {
+        int r = rand() % 1000, r2 = rand() % 1000;
+        ObjectData o = { 0, 0, vec {r / 1000.0f, (float)i/10, r2 / 1000.0f}, 0.1, 1.0 };
+        auto s = std::make_shared<Sphere>(o);
+        objects.push_back(s);
     }
 
     FragVars fvs(res, game.getAX(), game.getAY(), lights, lightCols, materials, objects);

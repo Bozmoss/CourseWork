@@ -28,6 +28,7 @@ struct ObjectData {
     float y;
     float z;
     float l1;
+    float br;
 };
 
 layout(std140) uniform bindPoint {
@@ -39,6 +40,13 @@ struct SDF {
     float dist;
     int index;
 };
+
+bool intersectsBoundingVolume(vec3 ro, vec3 rd, vec3 c, float r) {
+    vec3 oc = ro - c;
+    float b = dot(oc, rd);
+    float c1 = dot(oc, oc) - r * r;
+    return b * b - c1 >= 0.0;
+}
 
 SDF sphereSDF(vec3 p, vec3 c, float r, int i) {
     return SDF(length(c-p) - r, i);
@@ -94,9 +102,14 @@ vec3 translateSDF(vec3 p, vec3 t) {
     return p - t;
 }
 
-SDF finalSDF(vec3 p) {
+SDF finalSDF(vec3 p, vec3 rd) {
     SDF final = planeSDF(p, vec3(0.0, 1.0, 0.0), 1.5, 2);
     for (int i = 0; i < objectsL; i++) {
+
+        if (!intersectsBoundingVolume(p, rd, vec3(objects[i].x, objects[i].y, objects[i].z), objects[i].l1)) {
+            continue;
+        }
+
         SDF temp;
         switch(int(objects[i].type)) {
             case 0:
@@ -114,13 +127,13 @@ SDF finalSDF(vec3 p) {
     return final;
 }
 
-vec3 calculateNormal(vec3 p) {
+vec3 calculateNormal(vec3 p, vec3 rd) {
     const float eps = 0.0001;
     const vec2 epsVec = vec2(eps, 0);
     return normalize(vec3(
-        finalSDF(p+epsVec.xyy).dist - finalSDF(p-epsVec.xyy).dist,
-        finalSDF(p+epsVec.yxy).dist - finalSDF(p-epsVec.yxy).dist,
-        finalSDF(p+epsVec.yyx).dist - finalSDF(p-epsVec.yyx).dist
+        finalSDF(p+epsVec.xyy, rd).dist - finalSDF(p-epsVec.xyy, rd).dist,
+        finalSDF(p+epsVec.yxy, rd).dist - finalSDF(p-epsVec.yxy, rd).dist,
+        finalSDF(p+epsVec.yyx, rd).dist - finalSDF(p-epsVec.yyx, rd).dist
     ));
 }
 
@@ -128,7 +141,7 @@ bool isInShadow(vec3 p, vec3 rd, float dist) {
     float t = 0.01;
     for (int i = 0; i < 100; i++) {
         vec3 pos = p + t * rd;
-        SDF res = finalSDF(pos);
+        SDF res = finalSDF(pos, rd);
         if (res.dist < 0.001) {
             return true;
         }
@@ -158,19 +171,16 @@ vec3 getCol(vec3 Ia, Material m, vec3 Ii[lightsLen], vec3 n, vec3 li[lightsLen],
 
 vec2 rayMarch(vec3 ro, vec3 rd, float maxDist) {
     float t = 0.0;
-    vec3 pos;
-    int ind = -1;
     for (int i = 0; i < 100; i++) {
-        pos = ro + t * rd;
-        SDF res = finalSDF(pos);
+        vec3 pos = ro + t * rd;
+        SDF res = finalSDF(pos, rd);
         if (res.dist < 0.001) {
-            ind = res.index;
-            break;
+            return vec2(t, res.index);
         }
         t += res.dist;
         if (t > maxDist) break;
     }
-    return vec2(t, ind);
+    return vec2(t, -1);
 }
 
 vec3 checkerFloor(vec3 p) {
@@ -187,7 +197,7 @@ vec3 sortCol(vec3 ro, vec3 rd, float maxDist) {
         vec2 t = rayMarch(ro, rd, maxDist);
         vec3 pos = ro + t.x * rd;
         if (t.x < maxDist && t.y >= 0) {
-            vec3 n = calculateNormal(pos);
+            vec3 n = calculateNormal(pos, rd);
             vec3 view = normalize(ro - pos);
             vec3 Ia = vec3(1.0);
             vec3 surfaceC = getCol(Ia, materials[int(t.y)], lightCols, n, lights, view, pos);
