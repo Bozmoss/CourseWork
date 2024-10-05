@@ -26,7 +26,7 @@ void Object::updateObject(float g, float r) {
             if (data.r.y - data.l1 < -1.5) {
                 data.r.y = -1.5 + data.l1;
                 data.vel.y = -data.vel.y * r;
-                if (abs(data.vel.y) < 0.000001) {
+                if (abs(data.vel.y) < g * 0.25) {
                     data.floor = true;
                 }
             }

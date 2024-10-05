@@ -48,6 +48,10 @@ bool intersectsBoundingVolume(vec3 ro, vec3 rd, vec3 c, float r) {
     return b * b - c1 >= 0.0;
 }
 
+float dynamicStepSize(float dist, float minStep, float maxStep) {
+    return clamp(dist, minStep, maxStep);
+}
+
 SDF sphereSDF(vec3 p, vec3 c, float r, int i) {
     return SDF(length(c-p) - r, i);
 }
@@ -145,7 +149,7 @@ bool isInShadow(vec3 p, vec3 rd, float dist) {
         if (res.dist < 0.001) {
             return true;
         }
-        t += res.dist;
+        t += dynamicStepSize(res.dist, 0.001, 1.0);
         if (t >= dist) {
             return false;
         }
@@ -177,7 +181,7 @@ vec2 rayMarch(vec3 ro, vec3 rd, float maxDist) {
         if (res.dist < 0.001) {
             return vec2(t, res.index);
         }
-        t += res.dist;
+        t += dynamicStepSize(res.dist, 0.001, 1.0);
         if (t > maxDist) break;
     }
     return vec2(t, -1);

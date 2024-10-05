@@ -12,6 +12,8 @@
 #include <memory>
 #include <chrono>
 #include <cstdlib>
+#include <unordered_map>
+#include <functional>
 
 #include "GLOBAL.hpp"
 #include "filehandler.hpp"
@@ -25,11 +27,28 @@
 #include "game.hpp"
 #include "vec.hpp"
 
+struct pair_hash {
+    template <class T1, class T2>
+    std::size_t operator() (const std::pair<T1, T2>& pair) const {
+        auto hash1 = std::hash<T1>{}(pair.first);
+        auto hash2 = std::hash<T2>{}(pair.second);
+        return hash1 ^ (hash2 << 1);
+    }
+};
+
 std::vector<Material> materials;
 std::vector<std::shared_ptr<Object>> objects;
+std::unordered_map<std::pair<int, int>, std::vector<std::shared_ptr<Object>>, pair_hash> spatialHash;
 Game game(objects);
-const float g = 0.00003, r = 0.8, f = 0.7;
-const int bound = 50;
+float g = 0.000075, r = 0.8, f = 0.7;
+const int bound = 30;
+const float gridSize = 1.0f;
+
+std::pair<int, int> computeHash(const vec& pos) {
+    int x = static_cast<int>(pos.x / gridSize);
+    int y = static_cast<int>(pos.y / gridSize);
+    return { x, y };
+}
 
 void mouse(GLFWwindow* window, double xpos, double ypos) {
     game.mouseEvent(window, xpos, ypos, g, r);
@@ -51,11 +70,23 @@ void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
 }
 
 void update() {
+    spatialHash.clear();
     for (auto& o : objects) {
         o->updateObject(g, r);
+        auto hashKey = computeHash(o->getData()->r);
+        spatialHash[hashKey].push_back(o);
     }
-
-    int i = 0;
+    for (auto& pair : spatialHash) {
+        auto& cellObjects = pair.second;
+        for (size_t i = 0; i < cellObjects.size(); i++) {
+            for (size_t j = i + 1; j < cellObjects.size(); j++) {
+                if (cellObjects[i]->checkCollision(*cellObjects[j])) {
+                    cellObjects[i]->resolveCollision(*cellObjects[j]);
+                }
+            }
+        }
+    }
+    /*int i = 0;
     for (auto& o : objects) {
         for (int j = i + 1; j < objects.size(); j++) {
             if (o->checkCollision((*objects.at(j)))) {
@@ -63,7 +94,7 @@ void update() {
             }
         }
         i++;
-    }
+    }*/
 }
 
 void updateObjectDatas() {
@@ -81,6 +112,9 @@ int main(int argc, char** argv) {
     }
 
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    g = 3*mode->refreshRate / 1000000.0;
+    r = 3*mode->refreshRate / 330.0;
 
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
