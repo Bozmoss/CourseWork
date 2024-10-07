@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <unordered_map>
 #include <functional>
+#include <thread>
 
 #include "GLOBAL.hpp"
 #include "filehandler.hpp"
@@ -41,7 +42,7 @@ std::vector<std::shared_ptr<Object>> objects;
 std::unordered_map<std::pair<int, int>, std::vector<std::shared_ptr<Object>>, pair_hash> spatialHash;
 Game game(objects);
 float g = 0.000075, r = 0.8, f = 0.7;
-const int bound = 30;
+const int bound = 20;
 const float gridSize = 1.0f;
 
 std::pair<int, int> computeHash(const vec& pos) {
@@ -101,6 +102,7 @@ void updateObjectDatas() {
     for (auto& o : objects) {
         o->update(f);
     }
+    game.updateObjects(objects);
 }
 
 int main(int argc, char** argv) {
@@ -113,7 +115,7 @@ int main(int argc, char** argv) {
 
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-    g = 3*mode->refreshRate / 1000000.0;
+    g = 3*mode->refreshRate / 1000000.0 * bound / 3;
     r = 3*mode->refreshRate / 330.0;
 
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
@@ -147,7 +149,7 @@ int main(int argc, char** argv) {
     p.attachShader(fragmentShader);
     p.activate();
 
-    std::vector<float> res = { WINDOW_WIDTH, WINDOW_HEIGHT, 1.0f };
+    std::vector<float> res = { (float)mode->width, (float)mode->height, 1.0f };
     std::vector<std::vector<float>> lights = {
         {2.0, 0.6, 1.0},
         {-2.0, 0.6, 1.0},
@@ -216,16 +218,17 @@ int main(int argc, char** argv) {
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
+    std::thread t1(update);
+
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         p.activate();
 
-        update();
+        //update();
+        t1.join();
 
         updateObjectDatas();
-
-        game.updateObjects(objects);
 
         fvs.update(p, game.getAX(), game.getAY(), materials ,objects);
 
