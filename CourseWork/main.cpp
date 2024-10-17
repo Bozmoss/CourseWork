@@ -5,8 +5,15 @@
  * \author Ben
  * \date   August 2024
  *********************************************************************/
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -14,7 +21,6 @@
 #include <cstdlib>
 #include <unordered_map>
 #include <functional>
-#include <thread>
 
 #include "GLOBAL.hpp"
 #include "filehandler.hpp"
@@ -41,8 +47,9 @@ std::vector<Material> materials;
 std::vector<std::shared_ptr<Object>> objects;
 std::unordered_map<std::pair<int, int>, std::vector<std::shared_ptr<Object>>, pair_hash> spatialHash;
 Game game(objects);
+int screen = 0;
 float g = 0.000075, r = 0.8, f = 0.7;
-const int bound = 20;
+const int bound = 10;
 const float gridSize = 1.0f;
 
 std::pair<int, int> computeHash(const vec& pos) {
@@ -63,7 +70,7 @@ void key(GLFWwindow* window, int key, int scancode, int action, int mods) {
         objects.clear();
         for (int i = 0; i < bound; i++) {
             int r = rand() % 1000, r2 = rand() % 1000;
-            ObjectData o = { 0, 0, vec {r / 1000.0f, (float)i / 10, r2 / 1000.0f}, 0.1, 1.0 };
+            ObjectData o = { 0, 0, vec {r / 1000.0f, (float)i / 5, r2 / 1000.0f}, 0.1, 1.0 };
             auto s = std::make_shared<Sphere>(o);
             objects.push_back(s);
         }
@@ -87,15 +94,6 @@ void update() {
             }
         }
     }
-    /*int i = 0;
-    for (auto& o : objects) {
-        for (int j = i + 1; j < objects.size(); j++) {
-            if (o->checkCollision((*objects.at(j)))) {
-                o->resolveCollision((*objects.at(j)));
-            }
-        }
-        i++;
-    }*/
 }
 
 void updateObjectDatas() {
@@ -107,8 +105,7 @@ void updateObjectDatas() {
 
 int main(int argc, char** argv) {
     srand((unsigned)time(NULL));
-    int hres = glfwInit();
-    if (hres != 1) {
+    if (!glfwInit()) {
         std::cout << "Failed to initialise GLFW";
         return -1;
     }
@@ -118,6 +115,9 @@ int main(int argc, char** argv) {
     g = 3*mode->refreshRate / 1000000.0 * bound / 3;
     r = 3*mode->refreshRate / 330.0;
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -125,6 +125,11 @@ int main(int argc, char** argv) {
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "OpenGL", glfwGetPrimaryMonitor(), NULL);
+    if (!window) {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key);
     glfwSetCursorPosCallback(window, mouse);
@@ -134,6 +139,14 @@ int main(int argc, char** argv) {
         glfwTerminate();
         return -1;
     }
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     Shader vertexShader(Shader::Type::VERTEX, "./vertex.glsl");
     if (vertexShader.inError()) {
@@ -162,30 +175,15 @@ int main(int argc, char** argv) {
     };
 
     materials = {
-        {1.0f, 0.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.0f, 32.0f},
+        {1.0f, 1.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.2f, 32.0f},
         {0.0f, 1.0f, 0.0f, 0.2f, 0.7f, 0.5f, 0.4f, 32.0f},
         {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.0f, 16.0f},
         {0.0f, 0.0f, 1.0f, 0.2f, 0.7f, 0.5f, 0.4f, 32.0f},
     };
 
-    /*int r[6] = { rand() % 1000, rand() % 1000, rand() % 1000, rand() % 1000, rand() % 1000, rand() % 1000 };
-    ObjectData objectDatas[] = {
-        {0, 0, vec {r[0] / 1000.0f, 0.2, r[1] / 1000.0f}, 0.1, 1.0},
-        {0, 1, vec {r[2] / 1000.0f, 0.5, r[3] / 1000.0f}, 0.1, 1.0},
-        {0, 3, vec {r[4] / 1000.0f, 0.8, r[5] / 1000.0f}, 0.1, 1.0}
-    };*/
-
-    /*for (int i = 0; i < sizeof(objectDatas) / sizeof(objectDatas[0]); i++) {
-        switch (objectDatas[i].type) {
-        case 0:
-            auto s = std::make_shared<Sphere>(objectDatas[i]);
-            objects.push_back(s);
-            break;
-        }
-    }*/
     for (int i = 0; i < bound; i++) {
         int r = rand() % 1000, r2 = rand() % 1000;
-        ObjectData o = { 0, 0, vec {r / 1000.0f, (float)i/10, r2 / 1000.0f}, 0.1, 1.0 };
+        ObjectData o = { 0, 0, vec {r / 1000.0f, (float)i/5, r2 / 1000.0f}, 0.1, 1.0 };
         auto s = std::make_shared<Sphere>(o);
         objects.push_back(s);
     }
@@ -216,28 +214,43 @@ int main(int argc, char** argv) {
 
     fvs.init(p);
 
-    auto startTime = std::chrono::high_resolution_clock::now();
-
-    std::thread t1(update);
-
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        switch (screen) {
+        case 0:
+            glfwPollEvents();
 
-        p.activate();
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+            ImGui::ShowDemoWindow();
 
-        //update();
-        t1.join();
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        updateObjectDatas();
+            glfwSwapBuffers(window);
+            break;
+        case 1:
+            p.activate();
 
-        fvs.update(p, game.getAX(), game.getAY(), materials ,objects);
+            update();
 
-        glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);
+            updateObjectDatas();
 
-        glfwSwapBuffers(window);
+            fvs.update(p, game.getAX(), game.getAY(), materials, objects);
 
-        glfwPollEvents();
+            glDrawElements(GL_TRIANGLES, iB.number(), GL_UNSIGNED_INT, nullptr);
+
+            glfwSwapBuffers(window);
+
+            glfwPollEvents();
+            break;
+        }
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
