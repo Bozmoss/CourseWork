@@ -6,12 +6,11 @@
  * \date   August 2024
  *********************************************************************/
 
+//#include "imgui.h"
+//#include "imgui_impl_glfw.h"
+//#include "imgui_impl_opengl3.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
-//#include <imgui.h>
-//#include <imgui_impl_glfw.h>
-//#include <imgui_impl_opengl3.h>
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -45,7 +44,7 @@ std::vector<Material> materials;
 std::vector<std::shared_ptr<Object>> objects;
 std::unordered_map<std::pair<int, int>, std::vector<std::shared_ptr<Object>>, pair_hash> spatialHash;
 Game game(objects);
-int screen = 0;
+int screen = 1;
 float g = 0.000075, r = 0.8, f = 0.7;
 const int bound = 10;
 const float gridSize = 1.0f;
@@ -113,8 +112,8 @@ int main(int argc, char** argv) {
     g = 3*mode->refreshRate / 1000000.0 * bound / 3;
     r = 3*mode->refreshRate / 330.0;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
@@ -132,6 +131,9 @@ int main(int argc, char** argv) {
     glfwSetKeyCallback(window, key);
     glfwSetCursorPosCallback(window, mouse);
 
+    const GLubyte* version = glGetString(GL_VERSION);
+    std::cout << "OpenGL version supported by this platform (%s)\n" << version << std::endl;
+
     if (glewInit() != GLEW_OK) {
         std::cout << "Failed to initialise GLEW";
         glfwTerminate();
@@ -142,9 +144,10 @@ int main(int argc, char** argv) {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");*/
+    ImGui_ImplOpenGL3_Init("#version 440");*/
 
     Shader vertexShader(Shader::Type::VERTEX, "./vertex.glsl");
     if (vertexShader.inError()) {
@@ -216,6 +219,8 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         switch (screen) {
         case 0:
+            p.activate();
+
             glfwPollEvents();
 
             /*ImGui_ImplOpenGL3_NewFrame();
