@@ -5,15 +5,13 @@
  * \author Ben
  * \date   August 2024
  *********************************************************************/
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_EXPOSE_NATIVE_WGL
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
+//#include <imgui.h>
+//#include <imgui_impl_glfw.h>
+//#include <imgui_impl_opengl3.h>
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -140,13 +138,13 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    IMGUI_CHECKVERSION();
+    /*IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui_ImplOpenGL3_Init("#version 330");*/
 
     Shader vertexShader(Shader::Type::VERTEX, "./vertex.glsl");
     if (vertexShader.inError()) {
@@ -220,13 +218,13 @@ int main(int argc, char** argv) {
         case 0:
             glfwPollEvents();
 
-            ImGui_ImplOpenGL3_NewFrame();
+            /*ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
             ImGui::ShowDemoWindow();
 
             ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());*/
 
             glfwSwapBuffers(window);
             break;
@@ -248,9 +246,9 @@ int main(int argc, char** argv) {
         }
     }
 
-    ImGui_ImplOpenGL3_Shutdown();
+    /*ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    ImGui::DestroyContext();*/
 
     glfwTerminate();
     return 0;
