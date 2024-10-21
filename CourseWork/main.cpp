@@ -103,18 +103,20 @@ void updateObjectDatas() {
 int main(int argc, char** argv) {
     srand((unsigned)time(NULL));
     if (!glfwInit()) {
-        std::cout << "Failed to initialise GLFW";
+        std::cerr << "Failed to initialise GLFW";
         return -1;
     }
 
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    if (mode == nullptr) {
+        std::cerr << "Failed to retrieve video mode" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
 
     g = 3*mode->refreshRate / 1000000.0 * bound / 3;
     r = 3*mode->refreshRate / 330.0;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
@@ -123,7 +125,7 @@ int main(int argc, char** argv) {
 
     GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "OpenGL", glfwGetPrimaryMonitor(), NULL);
     if (!window) {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
@@ -131,11 +133,8 @@ int main(int argc, char** argv) {
     glfwSetKeyCallback(window, key);
     glfwSetCursorPosCallback(window, mouse);
 
-    const GLubyte* version = glGetString(GL_VERSION);
-    std::cout << "OpenGL version supported by this platform (%s)\n" << version << std::endl;
-
     if (glewInit() != GLEW_OK) {
-        std::cout << "Failed to initialise GLEW";
+        std::cerr << "Failed to initialise GLEW";
         glfwTerminate();
         return -1;
     }
