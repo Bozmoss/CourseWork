@@ -136,6 +136,7 @@
     <ClCompile Include="filehandler.cpp" />
     <ClCompile Include="fragvars.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gui.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="filehandler.hpp" />
     <ClInclude Include="game.hpp" />
     <ClInclude Include="GLOBAL.hpp" />
+    <ClInclude Include="gui.hpp" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />

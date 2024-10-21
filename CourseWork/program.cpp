@@ -27,7 +27,7 @@ void Program::activate() {
         char buffer[bufferSize];
         GLsizei length = 0;
         glGetProgramInfoLog(m_handle, bufferSize, &length, buffer);
-        std::cerr << "Program link error: " << std::string(buffer, length) << std::endl;
+        //std::cerr << "Program link error: " << std::string(buffer, length) << std::endl;
     }
     glUseProgram(m_handle);
 }

@@ -30,6 +30,7 @@
 #include "object.hpp"
 #include "game.hpp"
 #include "vec.hpp"
+#include "gui.hpp"
 
 struct pair_hash {
     template <class T1, class T2>
@@ -214,10 +215,13 @@ int main(int argc, char** argv) {
 
     fvs.init(p);
 
+    GUI gui(mode->width, mode->height);
+
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         switch (screen) {
         case 0:
+        {
             p.activate();
 
             glfwPollEvents();
@@ -225,13 +229,19 @@ int main(int argc, char** argv) {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            ImGui::ShowDemoWindow();
+
+            gui.mainMenu(screen);
+
 
             ImGui::Render();
+            int display_w = mode->width, display_h = mode->height;
+            glfwGetFramebufferSize(window, &display_w, &display_h);
+            glViewport(0, 0, display_w, display_h);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             glfwSwapBuffers(window);
             break;
+        }
         case 1:
             p.activate();
 
@@ -254,6 +264,7 @@ int main(int argc, char** argv) {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
