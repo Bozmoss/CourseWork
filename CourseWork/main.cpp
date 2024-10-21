@@ -6,9 +6,9 @@
  * \date   August 2024
  *********************************************************************/
 
-//#include "imgui.h"
-//#include "imgui_impl_glfw.h"
-//#include "imgui_impl_opengl3.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -44,7 +44,7 @@ std::vector<Material> materials;
 std::vector<std::shared_ptr<Object>> objects;
 std::unordered_map<std::pair<int, int>, std::vector<std::shared_ptr<Object>>, pair_hash> spatialHash;
 Game game(objects);
-int screen = 1;
+int screen = 0;
 float g = 0.000075, r = 0.8, f = 0.7;
 const int bound = 10;
 const float gridSize = 1.0f;
@@ -112,8 +112,8 @@ int main(int argc, char** argv) {
     g = 3*mode->refreshRate / 1000000.0 * bound / 3;
     r = 3*mode->refreshRate / 330.0;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
@@ -140,14 +140,14 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    /*IMGUI_CHECKVERSION();
+    IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 440");*/
+    ImGui_ImplOpenGL3_Init("#version 440");
 
     Shader vertexShader(Shader::Type::VERTEX, "./vertex.glsl");
     if (vertexShader.inError()) {
@@ -223,13 +223,13 @@ int main(int argc, char** argv) {
 
             glfwPollEvents();
 
-            /*ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
             ImGui::ShowDemoWindow();
 
             ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());*/
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             glfwSwapBuffers(window);
             break;
@@ -251,9 +251,9 @@ int main(int argc, char** argv) {
         }
     }
 
-    /*ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();*/
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
